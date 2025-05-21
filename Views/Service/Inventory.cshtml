@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewBag.Title = "Inventory";
+}
+<!-- Main Body Starts -->
+<div class="p-4 mt-4">
+    <div class="mb-2">
+        <div class="widget-content widget-content-area date-table-container">
+            <div class="filter-section mb-4">
+                <h4 class="table-header" style="color: var(--primary-color);">Inventory</h4>
+            </div>
+
+            <form action="">
+                <div class="row mb-2" style="display: flex;align-items: center;">
+                    <div class="col-sm-3 searchformfld">
+                        <label>Product</label>
+                        <select class="form-control form-select form-select    " id="ddlStatus">
+                            <option>Product 1</option>
+                            <option>Product 2</option>
+                            <option>Product 3</option>
+                            <option>Product 4</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-2 searchformfld">
+                        <input type="number" class="form-control" maxlength="4" placeholder=" ">
+                        <label class="mb-0">Quantity</label>
+                    </div>
+
+                    <div class="col-sm-7 searchformfld">
+                        <textarea name="Remarks" class="form-control" rows="3" cols="3"></textarea>
+                        <label class="mb-0">Remarks Name</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4 inventory_savebtn">
+                        <button type="button" class="btn btn-primary">Save</button>
+                        <button class="btn btn-danger" type="reset">Clear</button>
+                    </div>
+                    <div class="col-sm-4"></div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+<!-- Main Body Ends -->

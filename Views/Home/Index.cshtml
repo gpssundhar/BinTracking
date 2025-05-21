@@ -1,0 +1,62 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+    <title>Login</title>
+    <link rel="icon" type="image/x-icon" href="~/assets/img/logo.png" />
+    @Styles.Render("~/Login/css")
+
+</head>
+<body class="login-one">
+    <!-- Main Body Starts -->
+    <div class="container-fluid login-one-container">
+        <div class="login-content h-100">
+            <div class="row main-login-one h-100 w-100">
+                <div class="col-sm-12 login-slide">
+                    <div class="login-one-start">
+                        <div class="left-cnt">
+                            <img src="~/assets/img/logo.png" alt="" class="img-fluid" width="200" height="200">
+                        </div>
+                        <div class="right-cnt">
+                            <form action="">
+                                <div class="login-in">
+
+                                    <h4 class="text-start text-primary mt-0 mb-0">&nbsp;</h4>
+                                    <div class="login-one-inputs mt-2">
+                                        <input type="email" placeholder="Email ID" name="username" id="username" />
+                                        <i class="las la-envelope"></i>
+                                    </div>
+                                    <div class="login-one-inputs password_div mt-3">
+                                        <input type="password" placeholder="Password" name="password" id="password" />
+                                        <i class="las la-lock"></i>
+                                    </div>
+
+                                    <div class="login-one-inputs forget_password">
+                                        <a href="#">Forget Password</a>
+                                    </div>
+
+                                    <div class="login-one-inputs login-signup mt-2">
+                                        <a class="ripple-button btn-dark w-75" type="button" style="color: white;background: #57626c;border-radius: 18px;" href="@Url.Action("Employees","Master")">
+                                            LOG IN
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/assets/js/libs/jquery-3.1.1.min.js"></script>
+    <script src="~/assets/js/authentication/auth_1.js"></script>
+    <script src="~/bootstrap5/js/bootstrap.min.js"></script>
+    <!-- Main Body Ends -->
+</body>
+</html>

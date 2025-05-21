@@ -1,0 +1,159 @@
+﻿
+@{
+    ViewBag.Title = "Employees";
+}
+<!-- Main Body Starts -->
+<div class="p-4 mt-4">
+    <div class="mb-2">
+        <div class="widget-content widget-content-area date-table-container">
+            <div class="filter-section mb-4">
+                <h4 class="table-header" style="color: var(--primary-color);">Employee Master</h4>
+                <button class="btn" data-bs-toggle="modal" data-bs-target=".employee-modal" style="background: var(--primary-color);color: white;"><i class="las la-plus-circle la-lg"></i>Add</button>
+            </div>
+
+            <div class="filter-section row mb-4">
+                <div class="col-sm-2">
+                    <select class="form-control form-select">
+                        <option value="0">Active</option>
+                        <option value="1">Inactive</option>
+                    </select>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+
+            <div class="table-responsive mb-4">
+                <table id="basic-dt" class="table table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Employee Code</th>
+                            <th>Employee Name</th>
+                            <th>Email ID</th>
+                            <th>Mobile</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>OTA001</td>
+                            <td>Mohammed Ihsaan Sadique</td>
+                            <td>ihsaan.s@otaindia.com</td>
+                            <td>1234567890</td>
+                            <td>Active</td>
+                            <td>
+                                <a href="#" title="Edit" class="font-20 mr-4" data-bs-toggle="modal" data-bs-target=".device-edit-modal"><i class="las la-edit" style="color: var(--primary-color);"></i></a>
+                                <a href="#" title="Edit" class="font-20"><i class="las la-trash text-danger"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>OTA002</td>
+                            <td>Vikram M</td>
+                            <td>vikram.s@otaindia.com</td>
+                            <td>1234567890</td>
+                            <td>Active</td>
+                            <td>
+                                <a href="#" title="Edit" class="font-20 mr-4" data-bs-toggle="modal" data-bs-target=".device-edit-modal"><i class="las la-edit" style="color: var(--primary-color);"></i></a>
+                                <a href="#" title="Edit" class="font-20"><i class="las la-trash text-danger"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>OTA003</td>
+                            <td>Prakash</td>
+                            <td>prakash.m@otaindia.com</td>
+                            <td>1234567890</td>
+                            <td>Active</td>
+                            <td>
+                                <a href="#" title="Edit" class="font-20 mr-4" data-bs-toggle="modal" data-bs-target=".device-edit-modal"><i class="las la-edit" style="color: var(--primary-color);"></i></a>
+                                <a href="#" title="Edit" class="font-20"><i class="las la-trash text-danger"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>OTA004</td>
+                            <td>Arun Prakash M</td>
+                            <td>arunprakash.m@otaindia.com</td>
+                            <td>1234567890</td>
+                            <td>Active</td>
+                            <td>
+                                <a href="#" title="Edit" class="font-20 mr-4" data-bs-toggle="modal" data-bs-target=".device-edit-modal"><i class="las la-edit" style="color: var(--primary-color);"></i></a>
+                                <a href="#" title="Edit" class="font-20"><i class="las la-trash text-danger"></i></a>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main Body Ends -->
+<!-- Modal Section -->
+
+<div class="modal fade employee-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Employee</h4>
+                <button type="button" class="close border-0" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="las la-lg la-times text-white"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="display: flex;align-items: center;">
+                    <div class="col-sm-6 searchformfld">
+                        <input type="text" class="form-control EMS-inputfields" placeholder=" ">
+                        <label class="mb-0">Employee Code</label>
+                    </div>
+
+                    <div class="col-sm-6 searchformfld">
+                        <input type="text" class="form-control EMS-inputfields" placeholder=" ">
+                        <label class="mb-0">Employee Name</label>
+                    </div>
+                </div>
+
+
+
+                <div class="row" style="display: flex;align-items: flex-end;">
+
+                    <div class="col-sm-6 searchformfld">
+                        <input type="email" class="form-control EMS-inputfields">
+                        <label class="mb-0">Email</label>
+                    </div>
+
+                    <div class="col-sm-6 searchformfld">
+                        <input type="tel" class="form-control EMS-inputfields" placeholder=" ">
+                        <label class="mb-0">Mobile</label>
+                    </div>
+
+                </div>
+
+                <div class="row" style="display: flex;align-items: flex-end;">
+
+                    <div class="col-sm-6 searchformfld">
+                        <input type="password" class="form-control EMS-inputfields" placeholder=" ">
+                        <label class="mb-0">Password</label>
+                    </div>
+
+                    <div class="col-sm-6 searchformfld">
+                        <label> Status</label>
+                        <select class="form-control form-select form-select" id="ddlStatus">
+                            <option>Active</option>
+                            <option>Inactive</option>
+                        </select>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+                <button type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+

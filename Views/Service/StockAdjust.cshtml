@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "StockAdjust";
+}
+<!-- Main Body Starts -->
+<div class="p-4 mt-4">
+    <div class="mb-2">
+        <div class="widget-content widget-content-area date-table-container">
+            <div class="filter-section mb-4">
+                <h4 class="table-header" style="color: var(--primary-color);">Stock Adjustment</h4>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-3 searchformfld">
+                    <label for="">Product</label>
+                    <select class="form-control form-select">
+                        <option value="0">Active</option>
+                        <option value="1">Inactive</option>
+                    </select>
+                </div>
+                <div class="col-sm-3 searchformfld">
+                    <label for="">Stock</label>
+                    <input type="text" name="Stock" value="5" class="form-control" disabled>
+                </div>
+                <div class="col-sm-2 searchformfld">
+                    <label for="">Adjust Quantity</label>
+                    <input type="number" name="Adjust_Quantity" maxlength="4" class="form-control">
+                </div>
+                <div class="col-sm-2 searchformfld">
+                    <label for="">Final Quantity</label>
+                    <input type="text" name="Final_Quantity" value="5" class="form-control" disabled>
+                </div>
+                <div class="col-sm-2 searchformfld">
+                    <div class="acc-header">
+                        <button type="button" class="btn btn-primary mb-4" data-bs-toggle="collapse" data-bs-target="#stockadjust" aria-expanded="true" aria-controls="stockadjust">Barcode<i class="las la-qrcode" style="font-size: 20px;margin-left: 5px;"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="Accordion_Content">
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item border-0">
+
+                        <div id="stockadjust" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <table id="basic-dt" class="table table-hover" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Barcode</th>
+                                            <th>Serial Number</th>
+                                            <th>Select</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td><img src="assets/img/qrcode.png" alt="" width="35" height="35"></td>
+                                            <td>123456879</td>
+                                            <td><input type="checkbox" class="form-check"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td><img src="assets/img/qrcode.png" alt="" width="35" height="35"></td>
+                                            <td>123456879</td>
+                                            <td><input type="checkbox" class="form-check"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td><img src="assets/img/qrcode.png" alt="" width="35" height="35"></td>
+                                            <td>123456879</td>
+                                            <td><input type="checkbox" class="form-check"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="row">
+                                    <div class="col-sm-12 barcode_btn">
+                                        <button type="button" class="btn btn-info">Adjust</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main Body Ends -->

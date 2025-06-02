@@ -14,6 +14,11 @@
 
 </head>
 <body class="login-one">
+    <!-- Loader Starts -->
+    <div class="screen-loader" id="load_screen">
+        <span class="loader"></span>
+    </div>
+    <!--  Loader Ends -->
     <!-- Main Body Starts -->
     <div class="container-fluid login-one-container">
         <div class="login-content h-100">
@@ -29,11 +34,11 @@
 
                                     <h4 class="text-start text-primary mt-0 mb-0">&nbsp;</h4>
                                     <div class="login-one-inputs mt-2">
-                                        <input type="email" placeholder="Email ID" name="username" id="username" />
+                                        <input type="email" placeholder="Email ID" name="username" id="txtUser" />
                                         <i class="las la-envelope"></i>
                                     </div>
                                     <div class="login-one-inputs password_div mt-3">
-                                        <input type="password" placeholder="Password" name="password" id="password" />
+                                        <input type="password" placeholder="Password" name="password" id="txtPwd" />
                                         <i class="las la-lock"></i>
                                     </div>
 
@@ -42,9 +47,9 @@
                                     </div>
 
                                     <div class="login-one-inputs login-signup mt-2">
-                                        <a class="ripple-button btn-dark w-75" type="button" style="color: white;background: #57626c;border-radius: 18px;" href="@Url.Action("Employees","Master")">
+                                        <button id="btnUsrLgn" class="ripple-button btn-dark w-75" type="button" style="color: white;background: #57626c;border-radius: 18px;" href="@Url.Action("Employees","Master")">
                                             LOG IN
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -57,6 +62,113 @@
     <script src="~/assets/js/libs/jquery-3.1.1.min.js"></script>
     <script src="~/assets/js/authentication/auth_1.js"></script>
     <script src="~/bootstrap5/js/bootstrap.min.js"></script>
+    <script src="~/assets/js/loader.js"></script>
+    <script src="~/assets/js/toastr.min.js"></script>
     <!-- Main Body Ends -->
 </body>
 </html>
+
+<script>
+    const loginButton = document.getElementById("btnUsrLgn");
+
+    document.addEventListener("keydown", function (event) {
+        if (event.keyCode === 13) {
+            loginButton.click();
+        }
+    });
+
+    function ShowProgress(IsShow) {
+        var element = $('#load_screen');
+        element.css("display", IsShow == 1 ? "flex" : "none");
+    }
+</script>
+<script>
+    $('#btnUsrLgn').on("click", async function () {
+        ShowProgress(1);
+        $('#btnUsrLgn').attr('disabled', 'disabled');
+
+        var jsonData = {
+            UserId: $("#txtUser").val(),
+            UserPWD: $('#txtPwd').val()
+        };
+
+        if (!jsonData.UserId) {
+            toastr.error("Please Input Valid Username !");
+            $("#txtUser").focus();
+            $('#btnUsrLgn').removeAttr('disabled');
+            ShowProgress(0);
+            return true;
+        } else if (!jsonData.UserPWD) {
+            toastr.error("Please Input Valid Password !");
+            $('#txtPwd').focus();
+            $('#btnUsrLgn').removeAttr('disabled');
+            ShowProgress(0);
+            return true;
+        }
+
+        try {
+            // Perform the AJAX call
+            const response = await $.ajax({
+                type: "POST",
+                url: '@Url.Action("Login", "Home")',
+                data: JSON.stringify(jsonData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            });
+
+            $('#btnUsrLgn').removeAttr('disabled');
+
+            if (response.Success == 0) {
+                toastr.error(response.Message);
+                ShowProgress(0);
+                return false;
+            } else if (response.Success == 1) {
+                try {
+                    var url = "@Url.Action("Employees", "Master")";
+                    //await CheckMenus(); // Wait for CheckMenus to complete
+                    toastr.success(response.Message);
+                    location.href = url;
+                    $("#txtUser").val("");
+                    $('#txtPwd').val("");
+                    return true;
+                } catch (error) {
+                    toastr.error(error); // Handle errors from CheckMenus
+                    return false;
+                }
+            } else if (response.Success != 2) {
+                location.reload(true);
+            }
+
+            return false;
+        } catch (error) {
+            toastr.error("Error - 1 ::: " + error.message);
+            $('#btnUsrLgn').removeAttr('disabled');
+            ShowProgress(0);
+        }
+    });
+
+async function CheckMenus() {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("LoadMenus", "Login")', // Adjust URL if needed
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (jsonData) {
+                if (jsonData.Data.length == 0) {
+                    reject("User Access not updated");
+                    ShowProgress(0);
+                } else {
+                    resolve(); // Resolve the promise if everything is fine
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log("Response Text: " + XMLHttpRequest.responseText);
+                console.log("Error - 1 ::: " + errorThrown);
+                reject(errorThrown); // Reject the promise on error
+            }
+        });
+    });
+}
+
+</script>

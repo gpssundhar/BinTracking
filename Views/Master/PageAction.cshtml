@@ -1,7 +1,8 @@
-﻿
+﻿@model SakthiAutomotive.Models.mdlPageAction_Pg
 @{
     ViewBag.Title = "PageAction";
 }
+
 <!-- Main Body Starts -->
 <div class="p-4 mt-4">
     <div class="mb-2">
@@ -11,31 +12,11 @@
             </div>
 
             <div class="roles-rsp-choose row mt-4 mb-4">
-                <div class="col-sm-6 filter-section row">
-                    <div class="col-sm-6">
-                        <select class="form-control form-select">
-                            <option>Select Organization</option>
-                            <option>Origin Technology Associates</option>
-                            <option>Niraltek Solutions Pvt Ltd</option>
-                        </select>
-                    </div>
-                </div>
                 <div class="col-sm-6 select-option radio-button-select-option">
                     <div class="role-select">
                         <div class="custom-radio-1">
-
-                            <label for="rdo-3" class="btn-radio">
-                                <input type="radio" id="rdo-3" name="radio-grp" checked>
-                                <svg width="20px" height="20px" viewBox="0 0 20 20">
-                                    <circle cx="10" cy="10" r="9"></circle>
-                                    <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
-                                    <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
-                                </svg>
-                                <span>Roles</span>
-                            </label>
-
                             <label for="rdo-4" class="btn-radio">
-                                <input type="radio" id="rdo-4" name="radio-grp">
+                                <input type="radio" id="rdo-4" name="radio-grp" checked>
                                 <svg width="20px" height="20px" viewBox="0 0 20 20">
                                     <circle cx="10" cy="10" r="9"></circle>
                                     <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
@@ -47,180 +28,210 @@
                         </div>
                     </div>
                     <div class="select-option">
-                        <select class="form-control form-select">
-                            <option value="0">M Arun</option>
-                            <option value="1">Prakash</option>
-                            <option value="2">Vikram</option>
-                            <option value="3">Nancy</option>
-                            <option value="4">Mohammed Ihsaan Sadique</option>
-                            <option value="5">Preetha</option>
+                        <select class="form-control form-select" id="ddlEmp" onchange="LoadGrid()">
+                            <option value="0">Select</option>
+                            @if (Model.ddlRole != null && Model.ddlRole.Count >= 1)
+                            {
+                                foreach (var item in Model.ddlRole)
+                                {
+                                    <option value="@item.ddlId">@item.ddlDesc</option>
+                                }
+                            }
                         </select>
                     </div>
                 </div>
             </div>
 
-            <div class="table-responsive mb-4">
-                <table id="basic-dt" class="table table-hover" style="width:100%">
+            <div class="mb-4">
+                <table id="hdrtblGrid" class="table table-hover table-responsive" style="width:100%">
                     <thead>
                         <tr class="page-action-th">
                             <th style="width: 2%;">#</th>
                             <th>Menu</th>
                             <th>Page</th>
-                            <th style="width: 10%;"> <input type="checkbox">Add</th>
-                            <th style="width: 10%;"> <input type="checkbox">Edit</th>
-                            <th style="width: 12%;"> <input type="checkbox">Delete</th>
-                            <th style="width: 10%;"> <input type="checkbox">View</th>
+                            <th style="width: 10%;"> <label style="color: #0d2f64;"><input id="chbAdd" type="checkbox" value="1" name="add" onclick="selectAll('add')">Add</label></th>
+                            <th style="width: 10%;"> <label style="color: #0d2f64;"><input id="chbEdit" type="checkbox" value="1" name="edit" onclick="selectAll('edit')">Edit</label></th>
+                            <th style="width: 12%;"> <label style="color: #0d2f64;"><input id="chbDelete" type="checkbox" value="1" name="delete" onclick="selectAll('delete')">Delete</label></th>
+                            <th style="width: 10%;"> <label style="color: #0d2f64;"><input id="chbView" type="checkbox" value="1" name="view" onclick="selectAll('view')">View</label></th>
+                            <th style="width: 10%;"> <label style="color: #0d2f64;"><input id="chbUpload" type="checkbox" value="1" name="upload" onclick="selectAll('upload')">Upload</label></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr class="page-action-td">
-                            <td>1</td>
-                            <td>Masters</td>
-                            <td>Organization</td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>2</td>
-                            <td>Masters</td>
-                            <td>Branch</td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>3</td>
-                            <td>Masters</td>
-                            <td>Employee</td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>4</td>
-                            <td>Masters</td>
-                            <td>Device</td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>5</td>
-                            <td>Masters</td>
-                            <td>Gateway</td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>6</td>
-                            <td>Masters</td>
-                            <td>Group</td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>7</td>
-                            <td>Settings</td>
-                            <td></td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>8</td>
-                            <td>Dashboard</td>
-                            <td></td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                        </tr>
-
-                    </tbody>
                 </table>
+            </div>
+            <div class="row w-100">
+                <div class="col-sm-12" style="justify-content: center;display:flex;">
+                    <div id="dvSaveBtn">
+                        <button type="button" onclick="fnSave()" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
 <!-- Main Body Ends -->
+<script>
+    function selectAll(group) {
+        var a = $("input[name='" + group + "']:checked").val();
+        var checkboxes = document.querySelectorAll(`input[id^="${group}"]`);
+
+        if (a == "1") {
+
+            for (var i = 0; i < checkboxes.length; i++)
+                checkboxes[i].checked = checkboxes;
+        }
+        else {
+            for (var i = 0; i < checkboxes.length; i++)
+                checkboxes[i].checked = false;
+        }
+    }
+
+    function LoadGrid() {
+        try {
+            var rowClr = [];
+            var dataset = new Array();
+            var Emp = $('#ddlEmp').val();
+            document.getElementById("hdrtblGrid").style.display = Emp == "0" ? "none" : "block";
+            $('#chbAdd, #chbEdit, #chbDelete, #chbView').prop('checked', false);
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("PageAction_Grid", "Master")?Emp=' + Emp,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (jsonData) {
+                    var i = 0;
+                    var j = 0;
+                    var len = 0;
+
+                    if ($.fn.DataTable.fnIsDataTable("#hdrtblGrid"))
+                        $("#hdrtblGrid").dataTable().fnDestroy();
+
+                    if (jsonData == null)
+                        return;
+
+                    len = jsonData.length;
+                    for (i = j = 0; i < len; i++) {
+                        dataset.push([(i + 1), jsonData[i].MenuType, jsonData[i].MenuDesc +
+                            ` <input type="hidden" id="MnuId` + i + `" value="` + jsonData[i].MenuId + `"/>`,
+                        jsonData[i].ChbShow.charAt(0) === '1' ? `<input id="add` + i + `" type="checkbox" onclick="fnClick(add` + i + `,'chbAdd', view` + i + `,'','','','')" ` +
+                            (jsonData[i].ChbFill.charAt(0) === "1" ? ` checked="true" ` : '') + ` >` : "",
+                        jsonData[i].ChbShow.charAt(1) === '1' ? `<input id="edit` + i + `" type="checkbox" onclick="fnClick(edit` + i + `,'chbEdit', view` + i + `,'','','','')" ` +
+                            (jsonData[i].ChbFill.charAt(1) === "1" ? ` checked="true" ` : '') + ` >` : "",
+                        jsonData[i].ChbShow.charAt(2) === '1' ? `<input id="delete` + i + `" type="checkbox" onclick="fnClick(delete` + i + `,'chbDelete', view` + i + `,'','','','')" ` +
+                            (jsonData[i].ChbFill.charAt(2) === "1" ? ` checked="true" ` : '') + ` >` : "",
+                        jsonData[i].ChbShow.charAt(3) === '1' ? `<input id="view` + i + `" type="checkbox" onclick="fnClick(view` + i + `,'chbView', view` + i + `,'add','edit','delete','upload',` + i + `)" ` +
+                            (jsonData[i].ChbFill.charAt(3) === "1" ? ` checked="true" ` : '') + ` >` : "",
+                        jsonData[i].ChbShow.charAt(4) === '1' ? `<input id="upload` + i + `" type="checkbox" onclick="fnClick(upload` + i + `,'chbUpload', view` + i + `,'','','','')" ` +
+                            (jsonData[i].ChbFill.charAt(4) === "1" ? ` checked="true" ` : '') + ` >` : ""]);
+                    }
+
+
+                    $('#hdrtblGrid').DataTable({
+                        "autoWidth": true,
+                        "paging": false,
+                        "searching": false,
+                        "ordering":false,
+                        data: dataset
+                    });
+                    $('#hdrtblGrid_info').remove();
+
+                    i = 0;
+                    $("tr:visible").each(function (index) {
+                        if (i < j && index == rowClr[i]) {
+                            //console.log('color chang at this row');
+                            $(this).css("background-color", "#63ffcb91");
+                            i++;
+                        }
+                    });
+                }
+            });
+        }
+        catch (e) {
+            alert("Error - 2 \n " + e.message);
+        }
+    }
+
+
+    function fnClick(a, b, c, d, e, f, g, h) {
+        var checkboxes = document.getElementById(b);
+        if (a.checked == false) {
+            checkboxes.checked = false;
+            console.log(d + h);
+            var chbadd = document.getElementById(d + h);
+            var vhbedit = document.getElementById(e + h);
+            var chbdelete = document.getElementById(f + h);
+            var chbupload = document.getElementById(g + h);
+            chbadd != null ? chbadd.checked = false : "";
+            vhbedit != null ? vhbedit.checked = false : "";
+            chbdelete != null ? chbdelete.checked = false : "";
+            chbupload != null ? chbupload.checked = false : "";
+        }
+        if (a.checked == true) {
+            c.checked = true;
+        }
+        else {
+            c.disabled = false;
+        }
+
+    }
+
+
+    function fnSave() {
+        try {
+            var arrActionValues = [];
+            var EmpId = $('#ddlEmp').val();
+
+            if (EmpId.length == 0 || EmpId == "0") {
+                toastr.error("Select Valid User")
+                $('#ddlEmp').focus();
+                return true;
+            }
+
+            var i = -1;
+            var buf = '';
+
+            $("#hdrtblGrid TBODY TR").each(function () {
+                var selChb = {};
+
+                i++;
+                buf = $('#MnuId' + i).val();
+                console.log(buf);
+
+
+                selChb.MenuId = buf;
+                selChb.PageAction = ($('#add' + i).is(":checked") == true ? '1' : '0') + ($('#edit' + i).is(":checked") == true ? '1' : '0') +
+                    ($('#delete' + i).is(":checked") == true ? '1' : '0') + ($('#view' + i).is(":checked") == true ? '1' : '0') + ($('#upload' + i).is(":checked") == true ? '1' : '0');
+
+
+                if (!(selChb.PageAction == '0000'))
+                    arrActionValues.push(selChb);
+            });
+
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("PageAction_Save", "Master")?&SelId=' + EmpId + '&Mnu=' +@ViewBag.Mnu,
+                data: JSON.stringify(arrActionValues),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response.Success == 0)
+                        toastr.error(response.Message);
+                    else if (response.Success == 1) {
+                        toastr.success(response.Message);
+                        LoadGrid();
+                    }
+                    else if (response.Success == 3) {
+                        $("#txtAlaert").text('@Globals.SESSION_TIMEOUT');
+                        $("#AlertModal").modal({ backdrop: 'static', keyboard: false }, "show");
+                    }
+                }
+            });
+        }
+        catch (e) {
+            alert("Error - 3 \n " + e.message);
+
+        }
+    }
+</script>

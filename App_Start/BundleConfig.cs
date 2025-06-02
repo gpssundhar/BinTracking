@@ -22,12 +22,18 @@ namespace SakthiAutomotive
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js"));
 
-            bundles.Add(new ScriptBundle("~/Layout/js/js").Include(
+            bundles.Add(new ScriptBundle("~/assets/js/js").Include(
                     "~/assets/js/libs/jquery-3.1.1.min.js",
+                    "~/assets/js/libs/jquery-3.7.1.min.js",
                     "~/assets/js/app.js",
-                    "~/assets/js/darkmode.js"));
-                    //"~/bootstrap5/js/bootstrap.min.js",
-                    //"~/plugins/table/datatable/datatables.js"
+                    "~/assets/js/darkmode.js",
+                    "~/assets/js/loader.js",
+                    "~/assets/js/toastr.min.js",
+                    "~/assets/js/inputvalidations.js"));
+
+
+            bundles.Add(new ScriptBundle("~/Layout/datatable/js").Include(
+                "~/plugins/table/datatable/datatables.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
@@ -41,7 +47,9 @@ namespace SakthiAutomotive
                       "~/assets/css/login.css",
                       "~/bootstrap/css/bootstrap.min.css",
                       "~/assets/css/main.css",
-                      "~/assets/css/structure.css"));
+                      "~/assets/css/structure.css",
+                      "~/assets/css/toastr.min.css",
+                      "~/assets/css/loader.css"));
 
             bundles.Add(new StyleBundle("~/Layout/css/css").Include(
                     "~/assets/css/poppins_font.css",
@@ -49,10 +57,12 @@ namespace SakthiAutomotive
                     "~/assets/css/main.css",
                     "~/assets/css/structure.css",
                     "~/assets/css/elements/tooltip.css",
+                    "~/line-awesome-1.3.0/1.3.0/css/line-awesome.min.css",
+                    "~/assets/css/forms/radio-theme.css",
                     "~/plugins/table/datatable/datatables.css",
                     "~/plugins/table/datatable/dt-global_style.css",
-                    "~/line-awesome-1.3.0/1.3.0/css/line-awesome.min.css",
-                    "~/assets/css/forms/radio-theme.css"));
+                    "~/assets/css/toastr.min.css",
+                    "~/assets/css/loader.css"));
         }
     }
 }

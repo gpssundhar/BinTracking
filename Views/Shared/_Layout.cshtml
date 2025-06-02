@@ -8,6 +8,7 @@
     <link rel="icon" type="image/x-icon" href="~/assets/img/logo.png" />
     <!-- Common Styles Starts -->
     @Styles.Render("~/Layout/css/css")
+    @Scripts.Render("~/assets/js/js")
     <!-- Common Icon Ends -->
 </head>
 <body>
@@ -27,103 +28,111 @@
                         </a>
                     </li>
                 </ul>
-
+                @{
+                    MasterLogic objMas = new MasterLogic();
+                }
                 <ul class="list-unstyled menu-categories" id="accordionExample">
-                    <li class="menu">
-                        <a href="dashboard.html" class="dropdown-toggle">
+                    <li hidden id="mnuTypDashboard" class="menu">
+                        <a href="#dashboard" class="dropdown-toggle">
                             <div class="">
                                 <i class="las la-desktop"></i>
                                 <span>Dashboard</span>
                             </div>
                         </a>
+                        <ul class="collapse submenu list-unstyled" id="dashboard" data-parent="#accordionExample">
+
+                            <li hidden id="mnuDasDashboard">
+                                <a href="@Url.Action("Dashboard","Dashboard")"> Dashboard </a>
+                            </li>
+                        </ul>
                     </li>
-                    <li class="menu">
+                    <li hidden id="mnuTypMaster" class="menu">
                         <a href="#app" class="dropdown-toggle">
                             <div class="">
                                 <i class="las la-home la-3x"></i>
                                 <span>Masters</span>
                             </div>
                             @*<div>
-                                <i class="las la-angle-right sidemenu-right-icon"></i>
-                            </div>*@
+                                    <i class="las la-angle-right sidemenu-right-icon"></i>
+                                </div>*@
                         </a>
                         <ul class="collapse submenu list-unstyled" id="app" data-parent="#accordionExample">
 
-                            <li>
+                            <li hidden id="mnuMasEmployee">
                                 <a href="@Url.Action("Employees","Master")"> Employees </a>
                             </li>
 
-                            <li>
+                            <li hidden id="mnuMasTransporter">
                                 <a href="@Url.Action("Transporter","Master")"> Transporter </a>
                             </li>
 
-                            <li>
+                            <li hidden id="mnuMasShift">
                                 <a href="@Url.Action("Shifts","Master")"> Shifts </a>
                             </li>
 
-                            <li>
+                            <li hidden id="mnuMasProducts">
                                 <a href="@Url.Action("Products","Master")"> Products </a>
                             </li>
 
-                            <li>
+                            <li hidden id="mnuMasCustomers">
                                 <a href="@Url.Action("Customers","Master")"> Customers </a>
                             </li>
 
-                            <li>
+                            <li hidden id="mnuMasReason">
                                 <a href="@Url.Action("Reason","Master")"> Reason </a>
                             </li>
 
-                            <li>
-                                <a href="@Url.Action("PageAction","Master")"> Page Action </a>
+                            <li hidden id="mnuMasPgAction">
+                                <a href="@Url.Action("PageAction","Master")?ip=@objMas.AppEncrypt(Globals.MNU_MAS_PAGEACTION.ToString())"> Page Action </a>
                             </li>
 
                         </ul>
                     </li>
 
-                    <li class="menu">
+                    <li hidden id="mnuTypService" class="menu">
                         <a href="#services" class="dropdown-toggle">
                             <div class="">
                                 <i class="las la-server la-3x"></i>
                                 <span>Services</span>
                             </div>
                             @*<div>
-                                <i class="las la-angle-right sidemenu-right-icon"></i>
-                            </div>*@
+                                    <i class="las la-angle-right sidemenu-right-icon"></i>
+                                </div>*@
                         </a>
                         <ul class="collapse submenu list-unstyled" id="services" data-parent="#accordionExample">
 
-                            <li>
+                            <li hidden id="mnuSerInventory">
                                 <a href="@Url.Action("Inventory","Service")"> Inventory </a>
                             </li>
 
-                            <li>
+                            <li hidden id="mnuSerStkAdjust">
                                 <a href="@Url.Action("StockAdjust","Service")"> Stock Adjustemnt </a>
                             </li>
 
                         </ul>
                     </li>
 
-                    <li class="menu">
+                    <li hidden id="mnuTypeReport" class="menu">
                         <a href="#reports" class="dropdown-toggle">
                             <div class="">
                                 <i class="las la-file-invoice la-3x"></i>
                                 <span>Reports</span>
                             </div>
                             @*<div>
-                                <i class="las la-angle-right sidemenu-right-icon"></i>
-                            </div>*@
+                                    <i class="las la-angle-right sidemenu-right-icon"></i>
+                                </div>*@
                         </a>
                         <ul class="collapse submenu list-unstyled" id="reports" data-parent="#accordionExample">
 
-                            <li>
+                            <li hidden id="mnuRptStkAdjust">
                                 <a href="@Url.Action("RptStockAdjust","Report")"> Stock Adjustemnt Report </a>
                             </li>
 
-                            <li>
+                            <li hidden id="mnuRptInventory">
                                 <a href="@Url.Action("RptInventory","Report")"> Inventory Report </a>
                             </li>
 
-                            <li>
+                            <li hidden id="mnuRptCusInventory">
                                 <a href="@Url.Action("RptCustomerInventory","Report")"> Customer Inventory Report </a>
                             </li>
 
@@ -329,7 +338,7 @@
                         </p>
                     </div>
                     <div class="footer-section f-section-2">
-                        <p class="">Version 1.0.0</p>
+                        <p class="">Version @Globals.APPVER</p>
                     </div>
                 </div>
                 <!-- Copyright Footer Ends -->
@@ -339,9 +348,10 @@
     </div>
     <!-- Main Container Ends -->
     <!-- Common Script Starts -->
-    @Scripts.Render("~/Layout/js/js")
+
+    @Scripts.Render("~/Layout/datatable/js")
     <script src="~/bootstrap5/js/bootstrap.min.js"></script>
-    <script src="~/plugins/table/datatable/datatables.js"></script>
+
 
     <!-- Common Script Ends -->
     <!-- Page Level Plugin/Script Starts -->
@@ -362,33 +372,9 @@
             });
         });
 
-
-        //$(document).ready(function () {
-        //    var currentURL = window.location.href;
-
-        //    $(".menu a").each(function () {
-        //        var linkURL = $(this).attr("href");
-
-        //        // Skip empty hrefs or anchors like "#app"
-        //        if (!linkURL || linkURL.startsWith("#")) return;
-
-        //        // Match current URL with menu link
-        //        if (currentURL.indexOf(linkURL) !== -1) {
-        //            // Add 'active' to the current <li>
-        //            $(this).closest("li").addClass("active");
-
-        //            // Also show the parent menu
-        //            $(this).closest("ul.collapse").addClass("show");
-
-        //            // Rotate the angle icon
-        //            $(this).closest("ul.collapse").prev("a").find(".sidemenu-right-icon").addClass("rotate-icon");
-        //        }
-        //    });
-        //});
-
-
-
         $(document).ready(function () {
+            fnLoadMnus();
+
             $(".menu > a.dropdown-toggle").on("click", function (e) {
                 e.preventDefault();
 
@@ -427,13 +413,49 @@
         });
 
 
+        function fnLoadMnus() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("LoadMenus", "Home")',                  //"/Master/LoadMenus",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (jsonData) {
+                    if (jsonData.Data.length == 0) {
+                        toastr.success("User Access not updated");
+                        location.href = "@Url.Action("index", "Home")";
+                        return true;
+                    }
+                    var i, j, k;
+                    var mnuHdr = [mnuTypDashboard, mnuTypMaster, mnuTypService, mnuTypeReport];
+                    var mnuSub = [[mnuDasDashboard], [mnuMasEmployee, mnuMasTransporter, mnuMasShift, mnuMasProducts, mnuMasCustomers, mnuMasReason, mnuMasPgAction],
+                    [mnuSerInventory, mnuSerStkAdjust], [mnuRptStkAdjust, mnuRptInventory, mnuRptCusInventory]];
 
+                    i = j = k = 0;
+
+                    if (jsonData == null)
+                        return;
+                    else if (jsonData.Data.length == 0)
+                        return;
+
+                    for (i = 0; i < jsonData.Data.length; i++) {
+                        j = jsonData.Data[i].MenuType - 1;
+                        k = jsonData.Data[i].MenuId - (jsonData.Data[i].MenuType * 100) - 1;
+                        mnuHdr[j].hidden = false;
+                        mnuSub[j][k].hidden = false;
+                    }
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("Error - 5 ::: " + errorThrown);
+                }
+            });
+        }
     </script>
 
 
     <!-- Common Script Ends -->
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    @*@Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")*@
     @RenderSection("scripts", required: false)
 </body>
 </html>

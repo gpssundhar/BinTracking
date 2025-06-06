@@ -79,4 +79,104 @@ namespace SakthiAutomotive.Models
         public int Status { get; set; }
 
     }
+
+
+    //*********************     Transporter ******************
+
+    public class mdlTransporter_Grid
+    {
+        public int TransporterId { get; set; }
+        public string TransporterCode { get; set; }
+        public string TransporterDesc { get; set; }
+        public string ContactNo { get; set; }
+        public int Status { get; set; }
+    }
+    
+    public class mdlTransporter_Save
+    {
+        public int TransporterId { get; set; }
+        public string TransporterCode { get; set; }
+        public string TransporterDesc { get; set; }
+        public string ContactNo { get; set; }
+        public int Status { get; set; }
+    }
+
+    //*********************     Shifts      ******************
+
+    public class mdlShift_Grid
+    {
+        public int ShiftId { get; set; }
+        public string ShiftCode { get; set; }
+        public string ShiftDesc { get; set; }
+        public string FromTime { get; set; }
+        public string ToTime { get; set; }
+        public int Status { get; set; }
+    }
+
+    public class mdlShift_Save
+    {
+        public int ShiftId { get; set; }
+        public string ShiftCode { get; set; }
+        public string ShiftDesc { get; set; }
+        public string FromTime { get; set; }
+        public string ToTime { get; set; }
+        public int Status { get; set; }
+    }
+
+    public class mdlProduct_Grid
+    {
+        public int ProductId { get; set; }
+        public string ProductDesc { get; set; }
+        public string ProductCode { get; set; }
+        public int Stock { get; set; }
+        public int Status { get; set; }
+
+    }
+    
+    public class mdlProduct_Save
+    {
+        public int ProductId { get; set; }
+        public string ProductDesc { get; set; }
+        public string ProductCode { get; set; }
+        public int Stock { get; set; }
+        public int Status { get; set; }
+
+    }
+
+    public class mdlCustomer_Grid
+    {
+        public long CustId { get; set; }
+        public string CustCode { get; set; }
+        public string CustDesc { get; set; }
+        public string Email { get; set; }
+        public string ContactNo { get; set; }
+        public int Status { get; set; }
+    }
+
+    public class mdlCustomer_Save
+    {
+        public long CustId { get; set; }
+        public string CustCode { get; set; }
+        public string CustDesc { get; set; }
+        public string Email { get; set; }
+        public string ContactNo { get; set; }
+        public int Status { get; set; }
+    }
+
+
+    //******************************        Reason Master       ********************
+
+    public class mdlReason_Grid
+    {
+        public int ReasonId { get; set; }
+        public string ReasonDesc { get; set; }
+        public int Status { get; set; }
+    }
+
+    public class mdlReason_Save
+    {
+        public int ReasonId { get; set; }
+        public string ReasonDesc { get; set; }
+        public int Status { get; set; }
+    }
 }

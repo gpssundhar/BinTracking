@@ -8,74 +8,27 @@
         <div class="widget-content widget-content-area date-table-container">
             <div class="filter-section mb-4">
                 <h4 class="table-header" style="color: var(--primary-color);">Shift Master</h4>
-                <button class="btn" data-bs-toggle="modal" data-bs-target=".shift-modal" style="background: var(--primary-color);color: white;"><i class="las la-plus-circle la-lg"></i>Add</button>
+                <button class="btn" onclick="fnClear(1)" style="background: var(--primary-color);color: white;"><i class="las la-plus-circle la-lg"></i>Add</button>
             </div>
 
             <div class="filter-section row mb-4">
                 <div class="col-sm-2">
-                    <select class="form-control EMS-select">
-                        <option value="0">Active</option>
-                        <option value="1">Inactive</option>
+                    <select class="form-control EMS-select" id="ddlFltrStatus" onchange="LoadGrid()">
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
                     </select>
                 </div>
                 <div class="col-sm-4"></div>
             </div>
 
             <div class="table-responsive mb-4">
-                <table id="basic-dt" class="table table-hover" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Shift Code</th>
-                            <th>Shift</th>
-                            <th>Timings</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>OTA001</td>
-                            <td>General Shift</td>
-                            <td>1234567890</td>
-                            <td>Active</td>
-                            <td>
-                                <a href="#" title="Edit" class="font-20 mr-4" data-bs-toggle="modal" data-bs-target=".device-edit-modal"><i class="las la-edit" style="color: var(--primary-color);"></i></a>
-                                <a href="#" title="Edit" class="font-20"><i class="las la-trash text-danger"></i></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>OTA002</td>
-                            <td>2nd Shift</td>
-                            <td>1234567890</td>
-                            <td>Active</td>
-                            <td>
-                                <a href="#" title="Edit" class="font-20 mr-4" data-bs-toggle="modal" data-bs-target=".device-edit-modal"><i class="las la-edit" style="color: var(--primary-color);"></i></a>
-                                <a href="#" title="Edit" class="font-20"><i class="las la-trash text-danger"></i></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>OTA003</td>
-                            <td>3rd Shift</td>
-                            <td>1234567890</td>
-                            <td>Active</td>
-                            <td>
-                                <a href="#" title="Edit" class="font-20 mr-4" data-bs-toggle="modal" data-bs-target=".device-edit-modal"><i class="las la-edit" style="color: var(--primary-color);"></i></a>
-                                <a href="#" title="Edit" class="font-20"><i class="las la-trash text-danger"></i></a>
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
+                <table id="tblGrid" class="table table-hover" style="width:100%"></table>
             </div>
         </div>
     </div>
 </div>
 <!-- Main Body Ends -->
-<div class="modal fade shift-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+<div class="modal fade shift-modal" id="mdlAddEdit" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -87,12 +40,13 @@
             <div class="modal-body">
                 <div class="row" style="display: flex;align-items: center;">
                     <div class="col-sm-6 searchformfld">
-                        <input type="text" class="form-control EMS-inputfields" placeholder=" ">
+                        <input type="hidden" id="hdnId" value="0">
+                        <input type="text" class="form-control EMS-inputfields" placeholder=" " id="txtIpShiftCode" maxlength="20" onkeypress="return MasterCode(event)" ondrop="return false">
                         <label class="mb-0">Shift Code</label>
                     </div>
 
                     <div class="col-sm-6 searchformfld">
-                        <input type="text" class="form-control EMS-inputfields" placeholder=" ">
+                        <input type="text" class="form-control EMS-inputfields" placeholder=" " id="txtIpShiftDesc" maxlength="50" onkeypress="return EmpName(event)" ondrop="return false">
                         <label class="mb-0">Shift</label>
                     </div>
                 </div>
@@ -104,11 +58,11 @@
                                 <div class="from-to">
                                     <div class="from w-50">
                                         <label for="">From</label>
-                                        <input type="time" name="From" class="form-control">
+                                        <input type="time" name="From" class="form-control" id="FromTime">
                                     </div>
                                     <div class="to w-50">
                                         <label for="">To</label>
-                                        <input type="time" name="To" class="form-control">
+                                        <input type="time" name="To" class="form-control" id="ToTime">
                                     </div>
                                 </div>
                             </div>
@@ -117,9 +71,9 @@
 
                     <div class="col-sm-6 searchformfld">
                         <label> Status</label>
-                        <select class="form-control form-select EMS-select    " id="ddlStatus">
-                            <option>Active</option>
-                            <option>Inactive</option>
+                        <select class="form-control form-select EMS-select" id="ddlStatus">
+                            <option value="1" selected>Active</option>
+                            <option value="0">Inactive</option>
                         </select>
                     </div>
                 </div>
@@ -133,9 +87,193 @@
 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
-                <button type="button" class="btn btn-primary">Save</button>
+                <button class="btn btn-danger" onclick="fnClear(0)"><i class="flaticon-cancel-12"></i> Discard</button>
+                <button type="button" class="btn btn-primary" onclick="fnSave()">Save</button>
             </div>
         </div>
     </div>
 </div> 
+
+<script>
+    $(document).ready(function () {
+        try {
+            LoadGrid();
+        }
+        catch (e) {
+            toastr.error("Error - 1 \n " + e.message);
+        }
+    });
+
+    function LoadGrid() {
+        try {
+            let dataset = [];
+            var Status = $('#ddlFltrStatus').val();
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Shift_Grid", "Master")?Status=' + Status,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (jsonData) {
+                    if ($.fn.DataTable.fnIsDataTable("#tblGrid"))
+                        $("#tblGrid").dataTable().fnDestroy();
+
+                    if (jsonData == null)
+                        return;
+
+                    len = jsonData.length;
+                    for (i = 0; i < len; i++) {
+                        var _edit = @ViewBag.PgAction[1] == '1' ? "<a href=\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" data-toggle=\"modal\" " +
+                            "title=\"Edit\" style=\"margin-right:10px;\" onclick=\"fnEdit(" + jsonData[i].ShiftId + ", '" + jsonData[i].ShiftCode + "', '" +
+                            jsonData[i].ShiftDesc + "', '" + jsonData[i].FromTime + "', '" + jsonData[i].ToTime + "', '" + jsonData[i].Status +
+                            "')\"><i class=\"las la-edit la-lg \" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a> " : "";
+
+                        var _delete = (@ViewBag.PgAction[2] == '1' && Status == @Globals.STATUS_ACTIVE) ? " <a href =\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" " +
+                            "title=\"Delete\" onclick=\"fnDelete(" + jsonData[i].ShiftId + ",'" + jsonData[i].ShiftDesc + "')\" " +
+                            "><i class=\"las la-trash-alt la-lg text-danger\" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a></div>" : "";
+
+                        dataset.push([(i + 1), jsonData[i].ShiftCode, jsonData[i].ShiftDesc, jsonData[i].FromTime, jsonData[i].ToTime,
+                        "<div class=\"d-inline\">" + _edit + _delete + "</div>"]);
+                    }
+
+                    $('#tblGrid').DataTable({
+                        "autoWidth": true,
+                        "language": {
+                            "paginate": {
+                                "previous": "<i class='las la-angle-left'></i>",
+                                "next": "<i class='las la-angle-right'></i>"
+                            }
+                        },
+                        "lengthMenu": [10, 30, 50, 70],
+                        "pageLength": 10,
+
+                        data: dataset,
+                        columns: [{ title: "#", width: "1%" }, { title: "Code" }, { title: "Name" }, { title: "From Time" },{ title: "To Time" }, { title: "Action", width: "10%" }]
+                    });
+                }
+            });
+        }
+        catch (e) {
+            alert("Error - 2 \n " + e.message);
+        }
+    }
+
+    function fnSave() {
+        try {
+            var i = 0;
+            var datas = [];
+            var ShiftId = $('#hdnId').val();
+            var Status = $('#ddlStatus').val();
+
+            var txtCtrl = ["txtIpShiftCode", "txtIpShiftDesc", "FromTime", "ToTime"];
+            var Msgs = ["Shift Code", "Shift Name", "From Time", "To Time"];
+
+            for (i = 0; i < txtCtrl.length; i++) {
+                var element = document.getElementById(txtCtrl[i]);
+                if (element) {
+                    datas[i] = element.value;
+                    if ((datas[i].length == 0 || datas[i] == "0") && Msgs[i].length != 0) {
+                        toastr.error(Msgs[i] + ' is Mandatory');
+                        $("#" + txtCtrl[i]).focus();
+                        return;
+                    }
+                } else {
+                    console.log("Element not found: " + txtCtrl[i]);
+                }
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Shift_Save", "Master")',
+                data: JSON.stringify({
+                    "ShiftId": ShiftId,
+                    "ShiftCode": datas[0],
+                    "ShiftDesc": datas[1],
+                    "FromTime": datas[2],
+                    "ToTime": datas[3],
+                    "Status": Status
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response.Success == 0)
+                        toastr.error(response.Message);
+                    else if (response.Success == 1) {
+                        toastr.success(response.Message);
+                        fnClear(0);
+                        LoadGrid();
+                        // Navigate the grid page after 2 seconds
+                    }
+                    else
+                        toastr.error('something went wrong' + response.Message);
+                }
+            });
+        } catch (e) {
+            toastr.error("Error - 3 \n " + e.message);
+        }
+    }
+
+    function fnClear(modal) {
+        try {
+            $('#hdnId').val("0");
+            $('#txtIpShiftCode').val("");
+            $('#txtIpShiftDesc').val("");
+            $('#FromTime').val("");
+            $('#ToTime').val("");
+            $('#ddlStatus').val("1");
+            $('#mdlAddEdit').modal(modal == 1 ? "show" : "hide");
+
+        }
+        catch (e) {
+            toastr.error("Error - 4 \n " + e.message);
+        }
+    }
+
+    function fnEdit(Id, Code, Desc, FromTime, ToTime, Status) {
+        try {
+            $('#hdnId').val(Id);
+            $('#txtIpShiftCode').val(Code);
+            $('#txtIpShiftDesc').val(Desc);
+            $('#FromTime').val(FromTime);
+            $('#ToTime').val(ToTime);
+            $('#ddlStatus').val(Status);
+            $('#mdlAddEdit').modal("show");
+        }
+        catch (e) {
+            toastr.error("Error - 5 \n " + e.message);
+        }
+    }
+
+    function fnDelete(Id, Name) {
+        try {
+            if (confirm("Do you want to delete this Shift : "+ Name + " ?") != true)
+                return;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Shift_Delete", "Master")?Id=' + Id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (jsonData) {
+                    if (jsonData.Success == 0)
+                        toastr.error(jsonData.Message);
+                    else if (jsonData.Success == 1) {
+                        toastr.success(jsonData.Message);
+                    }
+                    else if (jsonData.Success == 3) {
+                        if (confirm(response.Message) != true)
+                            return;
+                        location.reload(true);
+                    }
+
+                    LoadGrid();
+                },
+                error: function () {
+                    alert("Error - 6.1 \n " + e.message);
+                }
+            });
+        }
+        catch (e) {
+            alert("Error - 6 \n " + e.message);
+        }
+    }
+</script>

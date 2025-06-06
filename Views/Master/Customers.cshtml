@@ -8,84 +8,21 @@
         <div class="widget-content widget-content-area date-table-container">
             <div class="filter-section mb-4">
                 <h4 class="table-header" style="color: var(--primary-color);">Customer Master</h4>
-                <button class="btn" data-bs-toggle="modal" data-bs-target=".customer-modal" style="background: var(--primary-color);color: white;"><i class="las la-plus-circle la-lg"></i>Add</button>
+                <button class="btn" onclick="fnClear(1)" style="background: var(--primary-color);color: white;"><i class="las la-plus-circle la-lg"></i>Add</button>
             </div>
 
             <div class="filter-section row mb-4">
                 <div class="col-sm-2">
-                    <select class="form-control form-select">
-                        <option value="0">Active</option>
-                        <option value="1">Inactive</option>
+                    <select class="form-control form-select" id="ddlFltrStatus" onchange="LoadGrid()">
+                        <option value="1" selected>Active</option>
+                        <option value="0">Inactive</option>
                     </select>
                 </div>
                 <div class="col-sm-4"></div>
             </div>
 
             <div class="table-responsive mb-4">
-                <table id="basic-dt" class="table table-hover" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Customer Code</th>
-                            <th>Customer Name</th>
-                            <th>Email ID</th>
-                            <th>Mobile</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>CUS001</td>
-                            <td>Mohammed Ihsaan Sadique</td>
-                            <td>ihsaan.s@otaindia.com</td>
-                            <td>1234567890</td>
-                            <td>Active</td>
-                            <td>
-                                <a href="#" title="Edit" class="font-20 mr-4" data-bs-toggle="modal" data-bs-target=".device-edit-modal"><i class="las la-edit" style="color: var(--primary-color);"></i></a>
-                                <a href="#" title="Edit" class="font-20"><i class="las la-trash text-danger"></i></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>CUS002</td>
-                            <td>Vikram M</td>
-                            <td>vikram.s@otaindia.com</td>
-                            <td>1234567890</td>
-                            <td>Active</td>
-                            <td>
-                                <a href="#" title="Edit" class="font-20 mr-4" data-bs-toggle="modal" data-bs-target=".device-edit-modal"><i class="las la-edit" style="color: var(--primary-color);"></i></a>
-                                <a href="#" title="Edit" class="font-20"><i class="las la-trash text-danger"></i></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>CUS003</td>
-                            <td>Prakash</td>
-                            <td>prakash.m@otaindia.com</td>
-                            <td>1234567890</td>
-                            <td>Active</td>
-                            <td>
-                                <a href="#" title="Edit" class="font-20 mr-4" data-bs-toggle="modal" data-bs-target=".device-edit-modal"><i class="las la-edit" style="color: var(--primary-color);"></i></a>
-                                <a href="#" title="Edit" class="font-20"><i class="las la-trash text-danger"></i></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>CUS004</td>
-                            <td>Arun Prakash M</td>
-                            <td>arunprakash.m@otaindia.com</td>
-                            <td>1234567890</td>
-                            <td>Active</td>
-                            <td>
-                                <a href="#" title="Edit" class="font-20 mr-4" data-bs-toggle="modal" data-bs-target=".device-edit-modal"><i class="las la-edit" style="color: var(--primary-color);"></i></a>
-                                <a href="#" title="Edit" class="font-20"><i class="las la-trash text-danger"></i></a>
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
+                <table id="tblGrid" class="table table-hover" style="width:100%"></table>
             </div>
         </div>
     </div>
@@ -93,7 +30,7 @@
 <!-- Main Body Ends -->
 <!-- Modal Section -->
 
-<div class="modal fade customer-modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+<div class="modal fade customer-modal" id="mdlAddEdit" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -105,12 +42,13 @@
             <div class="modal-body">
                 <div class="row" style="display: flex;align-items: center;">
                     <div class="col-sm-6 searchformfld">
-                        <input type="text" class="form-control" placeholder=" ">
+                        <input type="hidden" id="hdnId" value="0">
+                        <input type="text" class="form-control" placeholder=" " id="txtIpCustCode" maxlength="40" onkeypress="return MasterCode(event)" ondrop="return false">
                         <label class="mb-0">Customer Code</label>
                     </div>
 
                     <div class="col-sm-6 searchformfld">
-                        <input type="text" class="form-control " placeholder=" ">
+                        <input type="text" class="form-control " placeholder=" " id="txtIpCustDesc" maxlength="100" onkeypress="return EmpName(event)" ondrop="return false">
                         <label class="mb-0">Customer Name</label>
                     </div>
                 </div>
@@ -120,24 +58,23 @@
                 <div class="row" style="display: flex;align-items: flex-end;">
 
                     <div class="col-sm-6 searchformfld">
-                        <input type="email" class="form-control ">
+                        <input type="email" class="form-control " id="txtIpEmail" maxlength="100" onkeypress="return isEmail(event,0)" ondrop="return false">
                         <label class="mb-0">Email</label>
                     </div>
 
                     <div class="col-sm-6 searchformfld">
-                        <input type="tel" class="form-control " placeholder=" ">
+                        <input type="tel" class="form-control " placeholder=" " id="txtIpContact" maxlength="10" onkeypress="return MobileNo(event,0)" ondrop="return false">
                         <label class="mb-0">Mobile</label>
                     </div>
 
                 </div>
 
                 <div class="row" style="display: flex;align-items: flex-end;">
-
                     <div class="col-sm-6 searchformfld">
                         <label> Status</label>
-                        <select class="form-control form-select form-select    " id="ddlStatus">
-                            <option>Active</option>
-                            <option>Inactive</option>
+                        <select class="form-control form-select form-select" id="ddlStatus">
+                            <option value="1" selected>Active</option>
+                            <option value="0">Inactive</option>
                         </select>
                     </div>
 
@@ -145,9 +82,193 @@
 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
-                <button type="button" class="btn btn-primary">Save</button>
+                <button class="btn btn-danger" onclick="fnClear(0)"><i class="flaticon-cancel-12"></i> Discard</button>
+                <button type="button" class="btn btn-primary" onclick="fnSave()">Save</button>
             </div>
         </div>
     </div>
 </div> 
+
+<script>
+    $(document).ready(function () {
+        try {
+            LoadGrid();
+        }
+        catch (e) {
+            toastr.error("Error - 1 \n " + e.message);
+        }
+    });
+
+    function LoadGrid() {
+        try {
+            let dataset = [];
+            var Status = $('#ddlFltrStatus').val();
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Customer_Grid", "Master")?Status=' + Status,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (jsonData) {
+                    if ($.fn.DataTable.fnIsDataTable("#tblGrid"))
+                        $("#tblGrid").dataTable().fnDestroy();
+
+                    if (jsonData == null)
+                        return;
+
+                    len = jsonData.length;
+                    for (i = 0; i < len; i++) {
+                        var _edit = @ViewBag.PgAction[1] == '1' ? "<a href=\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" data-toggle=\"modal\" " +
+                            "title=\"Edit\" style=\"margin-right:10px;\" onclick=\"fnEdit(" + jsonData[i].CustId + ", '" + jsonData[i].CustCode + "', '" +
+                            jsonData[i].CustDesc + "', '" + jsonData[i].Email + "','" + jsonData[i].ContactNo + "', '" + jsonData[i].Status +
+                            "')\"><i class=\"las la-edit la-lg \" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a> " : "";
+
+                        var _delete = (@ViewBag.PgAction[2] == '1' && Status == @Globals.STATUS_ACTIVE) ? " <a href =\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" " +
+                            "title=\"Delete\" onclick=\"fnDelete(" + jsonData[i].CustId + ",'" + jsonData[i].CustDesc + "')\" " +
+                            "><i class=\"las la-trash-alt la-lg text-danger\" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a></div>" : "";
+
+                        dataset.push([(i + 1), jsonData[i].CustCode, jsonData[i].CustDesc, jsonData[i].Email,jsonData[i].ContactNo,
+                        "<div class=\"d-inline\">" + _edit + _delete + "</div>"]);
+                    }
+
+                    $('#tblGrid').DataTable({
+                        "autoWidth": true,
+                        "language": {
+                            "paginate": {
+                                "previous": "<i class='las la-angle-left'></i>",
+                                "next": "<i class='las la-angle-right'></i>"
+                            }
+                        },
+                        "lengthMenu": [10, 30, 50, 70],
+                        "pageLength": 10,
+
+                        data: dataset,
+                        columns: [{ title: "#", width: "1%" }, { title: "Code" }, { title: "Name" }, { title: "Email" }, { title: "Contact" }, { title: "Action", width: "10%" }]
+                    });
+                }
+            });
+        }
+        catch (e) {
+            alert("Error - 2 \n " + e.message);
+        }
+    }
+
+    function fnSave() {
+        try {
+            var i = 0;
+            var datas = [];
+            var ShiftId = $('#hdnId').val();
+            var Status = $('#ddlStatus').val();
+
+            var txtCtrl = ["txtIpCustCode", "txtIpCustDesc", "txtIpEmail", "txtIpContact"];
+            var Msgs = ["Customer Code", "Customer Name", "Email", "Contact Number"];
+
+            for (i = 0; i < txtCtrl.length; i++) {
+                var element = document.getElementById(txtCtrl[i]);
+                if (element) {
+                    datas[i] = element.value;
+                    if ((datas[i].length == 0 || datas[i] == "0") && Msgs[i].length != 0) {
+                        toastr.error(Msgs[i] + ' is Mandatory');
+                        $("#" + txtCtrl[i]).focus();
+                        return;
+                    }
+                } else {
+                    console.log("Element not found: " + txtCtrl[i]);
+                }
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Customer_Save", "Master")',
+                data: JSON.stringify({
+                    "CustId": ShiftId,
+                    "CustCode": datas[0],
+                    "CustDesc": datas[1],
+                    "Email": datas[2],
+                    "ContactNo": datas[3],
+                    "Status": Status
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response.Success == 0)
+                        toastr.error(response.Message);
+                    else if (response.Success == 1) {
+                        toastr.success(response.Message);
+                        fnClear(0);
+                        LoadGrid();
+                        // Navigate the grid page after 2 seconds
+                    }
+                    else
+                        toastr.error('something went wrong' + response.Message);
+                }
+            });
+        } catch (e) {
+            toastr.error("Error - 3 \n " + e.message);
+        }
+    }
+
+    function fnClear(modal) {
+        try {
+            $('#hdnId').val("0");
+            $('#txtIpCustCode').val("");
+            $('#txtIpCustDesc').val("");
+            $('#txtIpEmail').val("");
+            $('#txtIpContact').val("");
+            $('#ddlStatus').val("1");
+            $('#mdlAddEdit').modal(modal == 1 ? "show" : "hide");
+
+        }
+        catch (e) {
+            toastr.error("Error - 4 \n " + e.message);
+        }
+    }
+
+    function fnEdit(Id, Code, Desc, Email, Contact,Status) {
+        try {
+            $('#hdnId').val(Id);
+            $('#txtIpCustCode').val(Code);
+            $('#txtIpCustDesc').val(Desc);
+            $('#txtIpEmail').val(Email);
+            $('#txtIpContact').val(Contact);
+            $('#ddlStatus').val(Status);
+            $('#mdlAddEdit').modal("show");
+        }
+        catch (e) {
+            toastr.error("Error - 5 \n " + e.message);
+        }
+    }
+
+    function fnDelete(Id, Name) {
+        try {
+            if (confirm("Do you want to delete this Customer : "+ Name + " ?") != true)
+                return;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Customer_Delete", "Master")?Id=' + Id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (jsonData) {
+                    if (jsonData.Success == 0)
+                        toastr.error(jsonData.Message);
+                    else if (jsonData.Success == 1) {
+                        toastr.success(jsonData.Message);
+                    }
+                    else if (jsonData.Success == 3) {
+                        if (confirm(response.Message) != true)
+                            return;
+                        location.reload(true);
+                    }
+
+                    LoadGrid();
+                },
+                error: function () {
+                    alert("Error - 6.1 \n " + e.message);
+                }
+            });
+        }
+        catch (e) {
+            alert("Error - 6 \n " + e.message);
+        }
+    }
+</script>

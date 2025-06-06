@@ -14,7 +14,8 @@ namespace SakthiAutomotive.Controllers
     {
         HomeController ObjCom = new HomeController();
         readonly MasterLogic objMas = new MasterLogic();
-        // GET: Master
+        
+        
         public ActionResult Employees()
         {
             if (ObjCom.ChkLgnSession(Request.Cookies) != 1)
@@ -195,6 +196,7 @@ namespace SakthiAutomotive.Controllers
             }
         }
 
+
         public ActionResult Transporter_Delete(long Id)
         {
             string MTHDNAME = "Transporter_Delete";
@@ -217,6 +219,82 @@ namespace SakthiAutomotive.Controllers
                 return ObjCom.JsonRspException(MTHDNAME, Ex.Message);
             }
         }
+
+
+        public ActionResult TVehicle_Get(int TId)
+        {
+            string MTHDNAME = "TVehicle_Get";
+            try
+            {
+                List<mdlTVehicle> lstItem = objMas.GetDataList<mdlTVehicle>("EXEC TVehicle_Grid " + Globals.MNU_MAS_TRANSPORTER + "," +
+                    Request.Cookies.Get(Globals.COOKIE_LGNEMPID).Value + "," + TId);
+                if (lstItem == null)
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 1, Globals.SERVER_ERROR, null);
+
+                return ObjCom.JsonRspList(1, MTHDNAME, lstItem.Count(), lstItem);
+            }
+            catch (Exception Ex)
+            {
+                return ObjCom.JsonRspException(MTHDNAME + " C[3 : 1,3]", Ex.Message);
+            }
+        }
+
+
+        public ActionResult Vehicle_Save(mdlTVehicle data)
+        {
+            string MTHDNAME = ": Vehicle_Save";
+            try
+            {
+                if (ObjCom.ChkLgnSession(Request.Cookies) != 1)
+                    return RedirectToAction(Globals.CNTRLMETHOD_LOGIN, Globals.CONTROLLER_LOGIN);
+
+                string[] ipdata = { data.VehicleNo, data.VehicleType, data.Remarks };
+                if (objMas.Text_ChkInputs(new int[] { 0, 0, 1 }, ref ipdata, new string[] { "Vehicle Number", "Vehicle Type", "Remarks" },
+                        new int[] { MasterLogic.TXTIP_ALPHA_NOS_SPL_ANY, MasterLogic.TXTIP_ALPHA_NOS_SPL_ANY, 0 },
+                        new int[] { 0, 0, 0 }, new int[] { 0, 0, 0 },
+                        new int[] { 0, 0, 0 }) != 1)
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 7, objMas.DBErrBuf, null);
+
+                data.VehicleNo = ipdata[0]; data.VehicleType = ipdata[1]; data.Remarks = ipdata[2];
+
+                List<mdlTVehicle> lstItem = objMas.GetDataList<mdlTVehicle>("EXEC TVehicle_Save " + Globals.MNU_MAS_TRANSPORTER + "," +
+                    data.TransporterId + ",'" + data.VehicleNo + "','" + data.VehicleType + "','" + data.Remarks + "'," + data.Status + ", " +
+                    Request.Cookies.Get(Globals.COOKIE_LGNEMPID).Value);
+
+                if (lstItem == null)
+                    return ObjCom.JsonRspMsg(0, 0, MTHDNAME, 2, Globals.SERVER_ERROR + " " + objMas.DBErrBuf, null);
+                
+                return ObjCom.JsonRspList(1, MTHDNAME, lstItem.Count(), lstItem);
+            }
+            catch (Exception Ex)
+            {
+                return ObjCom.JsonRspException(MTHDNAME, Ex.Message);
+            }
+        }
+
+
+        public ActionResult Vehicle_Delete(int Id, string Vehicle)
+        {
+            string MTHDNAME = ": Vehicle_Delete";
+            try
+            {
+                if (ObjCom.ChkLgnSession(Request.Cookies) != 1)
+                    return RedirectToAction(Globals.CNTRLMETHOD_LOGIN, Globals.CONTROLLER_LOGIN);
+
+                List<mdlTVehicle> lstItem = objMas.GetDataList<mdlTVehicle>("EXEC TVehicle_Delete " + Globals.MNU_MAS_TRANSPORTER + "," +
+                    Id + ",'" + Vehicle + "', " + Request.Cookies.Get(Globals.COOKIE_LGNEMPID).Value);
+
+                if (lstItem == null)
+                    return ObjCom.JsonRspMsg(0, 0, MTHDNAME, 2, Globals.SERVER_ERROR + " " + objMas.DBErrBuf, null);
+
+                return ObjCom.JsonRspList(1, MTHDNAME, lstItem.Count(), lstItem);
+            }
+            catch (Exception Ex)
+            {
+                return ObjCom.JsonRspException(MTHDNAME, Ex.Message);
+            }
+        }
+
 
         public ActionResult Shifts()
         {
@@ -299,7 +377,6 @@ namespace SakthiAutomotive.Controllers
         }
 
 
-
         [HttpPost]
         [Route("Master/Shift_Delete")]
         public ActionResult Shift_Delete(long Id)
@@ -347,6 +424,7 @@ namespace SakthiAutomotive.Controllers
                 return ObjCom.JsonRspException(MTHDNAME + " C[3 : 1,3]", Ex.Message);
             }
         }
+
 
         public ActionResult Product_Grid(int Status)
         {
@@ -403,7 +481,6 @@ namespace SakthiAutomotive.Controllers
                 return ObjCom.JsonRspException(MTHDNAME, Ex.Message);
             }
         }
-
 
 
         [HttpPost]
@@ -472,6 +549,7 @@ namespace SakthiAutomotive.Controllers
             }
         }
 
+
         [HttpPost]
         [Route("Master/Customer_Save")]
         public ActionResult Customer_Save(mdlCustomer_Save data)
@@ -536,6 +614,7 @@ namespace SakthiAutomotive.Controllers
             }
         }
 
+
         public ActionResult Reason()
         {
             string MTHDNAME = "Reason";
@@ -557,6 +636,7 @@ namespace SakthiAutomotive.Controllers
                 return ObjCom.JsonRspException(MTHDNAME + " C[3 : 1,3]", Ex.Message);
             }
         }
+
 
         public ActionResult Reason_Grid(int Status)
         {
@@ -652,7 +732,8 @@ namespace SakthiAutomotive.Controllers
                 if (ViewBag.PgAction[3] != '1')
                     return RedirectToAction(Globals.CNTRLMETHOD_DASHBOARD, Globals.CONTROLLER_DASHBOARD);
 
-                model.ddlRole = objMas.GetDataList<ddlValues>("Select EmpId As ddlId,EmpName As ddlDesc From Employees Where Status=1 order by EmpName");
+                model.ddlRole = objMas.GetDataList<ddlValues>("Select EmpId As ddlId,EmpName As ddlDesc From Employees Where Status=1 and EmpId != " +
+                    Request.Cookies.Get(Globals.COOKIE_LGNEMPID).Value + " order by EmpName");
                 if (model.ddlRole == null)
                 {
                     objMas.PrintLog(MTHDNAME, objMas.DBErrBuf);
@@ -666,6 +747,7 @@ namespace SakthiAutomotive.Controllers
                 return ObjCom.JsonRspException(MTHDNAME, Ex.Message);
             }
         }
+
 
         [HttpGet]
         [Route("Master/PageAction_Grid")]

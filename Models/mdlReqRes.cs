@@ -101,6 +101,16 @@ namespace SakthiAutomotive.Models
         public int Status { get; set; }
     }
 
+
+    public class mdlTVehicle
+    {
+        public long TransporterId { get; set; }
+        public string VehicleNo { get; set; }
+        public string VehicleType { get; set; }
+        public string Remarks { get; set; }
+        public long Status { get; set; }
+    }
+
     //*********************     Shifts      ******************
 
     public class mdlShift_Grid

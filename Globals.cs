@@ -83,7 +83,8 @@ public class Globals
 
     // Report --> 401 - 499
     public static int MNU_RPT_STOCKADJUST = 401;
-    public static int MNU_RPT_INVENTORY = 402;
-    public static int MNU_RPT_CUSTOMERINVENTORY = 403;
+    public static int MNU_RPT_CUSTSTOCKADJUST = 402;
+    public static int MNU_RPT_INVENTORY = 403;
+    public static int MNU_RPT_CUSTOMERINVENTORY = 404;
 
 }

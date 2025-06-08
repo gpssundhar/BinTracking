@@ -1,4 +1,4 @@
-﻿
+﻿@model SakthiAutomotive.Models.mdlRptInventory_Pg
 @{
     ViewBag.Title = "RptInventory";
 }
@@ -7,26 +7,30 @@
     <div class="mb-2">
         <div class="widget-content widget-content-area br-6 date-table-container">
             <div class="filter-section mb-4">
-                <h4 class="table-header" style="color: var(--primary-color);">Inventory Report</h4>
+                <h4 id="lblHeader" class="table-header" style="color: var(--primary-color);">Inventory Report</h4>
             </div>
 
             <div class="report-filters mb-5">
                 <div class="row mt-3 mb-4" style="display: flex;align-items: center;">
-                    <div class="col-sm-4 searchformfld">
-                        <label>From</label>
-                        <input type="date" class="form-control" placeholder=" ">
-                    </div>
-
-                    <div class="col-sm-4 searchformfld">
-                        <label>To</label>
-                        <input type="date" class="form-control" placeholder=" ">
+                    <div id="dvCustomer" class="col-sm-4 searchformfld">
+                        <label>Customer</label>
+                        <select class="form-control form-select EMS-select" id="ddlCustomer">
+                            <option value="0">All</option>
+                            @if (Model.ddlCustomer != null && Model.ddlCustomer.Count >= 1)
+                            {
+                                foreach (var item in Model.ddlCustomer)
+                                {
+                                    <option value="@item.ddlId">@item.ddlDesc</option>
+                                }
+                            }
+                        </select>
                     </div>
 
                     <div class="col-sm-4 searchformfld">
                         <label>Download Format</label>
-                        <select class="form-control form-select EMS-select">
-                            <option>Excel</option>
-                            <option>PDF</option>
+                        <select class="form-control form-select EMS-select" id="ddlDwnFmt">
+                            <option value="0" selected>Excel</option>
+                            <option value="1">PDF</option>
                         </select>
                     </div>
                 </div>
@@ -36,15 +40,15 @@
                     <div class="col-sm-3"></div>
 
                     <div class="col-sm-6 reports-btns">
-                        <button class="btn btn-primary">
-                            <span>Save</span>
+                        <button class="btn btn-primary" onclick="LoadGrid()">
+                            <span>Show</span>
                             <i class="las la-save la-lg"></i>
                         </button>
-                        <button class="btn btn-danger">
+                        <button class="btn btn-danger" onclick="fnClear()">
                             <span>Clear</span>
                             <i class="las la-eraser la-lg"></i>
                         </button>
-                        <button class="btn btn-primary">
+                        <button class="btn btn-primary" onclick="fnDownload()">
                             <span>Download</span>
                             <i class="las la-file-download la-lg"></i>
                         </button>
@@ -56,38 +60,179 @@
             </div>
 
             <div class="table-responsive mb-4">
-                <table id="basic-dt" class="table table-hover" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th style="width: 2%;">#</th>
-                            <th>From</th>
-                            <th>To</th>
-                            <th>Format</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>12-05-2025</td>
-                            <td>15-05-2025</td>
-                            <td>Excel</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>10-05-2025</td>
-                            <td>13-05-2025</td>
-                            <td>PDF</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>07-05-2025</td>
-                            <td>10-05-2025</td>
-                            <td>Excel</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <table id="tblGrid" class="table table-hover" style="width:100%"></table>
             </div>
         </div>
     </div>
 </div>
 <!-- Main Body Ends -->
+<div class="modal fade reason-modal" id="mdlAddEdit" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Serial Numbers</h4>
+                <button type="button" class="close border-0" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="las la-lg la-times text-white"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled" style="font-size: 18px; color: black;" id="ulSlNoLeft">
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled" style="font-size: 18px; color: black;" id="ulSlNoRight">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        document.getElementById("dvCustomer").style.display = "@ViewBag.dvCust";
+        $("#lblHeader").text("@ViewBag.lblHeader");
+        fnClear();
+    });
+
+    function fnClear() {
+        try {
+            $('#tblGrid').hide(true);
+        }
+        catch (e) {
+            toastr.error("Error - 1 ::: " + e.message);
+        }
+    }
+
+    function LoadGrid() {
+        try {
+            let dataset = [];
+            var Format = $('#ddlDwnFmt').val();
+            var Customer = $('#ddlCustomer').val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RptInventory_Grid", "Report")',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify({
+                    "CustId": Customer,
+                    "Format": Format,
+                    "PgIdx": @ViewBag.Mnu,
+                }),
+                success: function (jsonData) {
+                    $('#tblGrid').show();
+                    if ($.fn.DataTable.fnIsDataTable("#tblGrid"))
+                        $("#tblGrid").dataTable().fnDestroy();
+
+                    if (jsonData == null)
+                        return;
+
+                    len = jsonData.length;
+                    for (i = 0; i < len; i++) {
+                        var _edit = "<a href=\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" data-toggle=\"modal\" " +
+                            "title=\"Details\" style=\"margin-right:10px;\" onclick=\"fnShowSerial('" + jsonData[i].Barcode +
+                            "')\"><i class=\"las la-eye la-lg \" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a> ";
+
+                        dataset.push([(i + 1), jsonData[i].CustDesc,jsonData[i].ProductDesc, jsonData[i].BarcodeQty,
+                        "<div class=\"d-inline\">" + _edit + "</div>"]);
+                    }
+
+                    $('#tblGrid').DataTable({
+                        "autoWidth": true,
+                        "language": {
+                            "paginate": {
+                                "previous": "<i class='las la-angle-left'></i>",
+                                "next": "<i class='las la-angle-right'></i>"
+                            }
+                        },
+                        "lengthMenu": [10, 30, 50, 70],
+                        "pageLength": 10,
+                        'aoColumnDefs': [{
+                            'visible': (@ViewBag.grdCust),
+                            'targets': [1]
+                        }],
+
+                        data: dataset,
+                        columns: [{ title: "#", width: "1%" }, { title: "Customer" }, { title: "Product" }, { title: "Stock Qty" },{ title: "Serial Number", width: "10%" }]
+                    });
+
+                }
+            });
+        }
+        catch (e) {
+            alert("Error - 2 \n " + e.message);
+        }
+    }
+
+
+    function fnShowSerial(SLNo) {
+        try {
+            // Clear existing list items
+            $('#ulSlNoLeft').empty();
+            $('#ulSlNoRight').empty();
+
+            // Split the SLNo string into array
+            var items = SLNo.split(',');
+
+            // Loop and append items to lists (split into 2 columns)
+            var mid = Math.ceil(items.length / 2);
+
+            items.forEach(function (item, index) {
+                var li = $('<li>').text(index + 1 + ". " + item.trim());
+                if (index < mid) {
+                    $('#ulSlNoLeft').append(li);
+                } else {
+                    $('#ulSlNoRight').append(li);
+                }
+            });
+            $('#mdlAddEdit').modal("show");
+        }
+        catch (e) {
+            alert("Error - 3 \n " + e.message);
+        }
+    }
+
+    function fnDownload() {
+        try {
+            //ShowProgress(1);
+            var Format = $('#ddlDwnFmt').val();
+            var Customer = $('#ddlCustomer').val();
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RptInventory_Dwnld", "Report")',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify({
+                    "Format": Format,
+                    "CustId": Customer,
+                    "PgIdx": @ViewBag.Mnu,
+                }),
+                success: function (jsonData) {
+                    if (jsonData.Success == 0)
+                        toastr.error(jsonData.Message);
+                    else if (jsonData.Success == 1)
+                        window.open("../" + jsonData.Message);
+                    else if (jsonData.Success == 3) {
+                        if (confirm(jsonData.Message) != true)
+                            return;
+
+                        location.reload(true);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("Error - 7\n" + errorThrown);
+                }
+            });
+        }
+        catch (e) {
+            toastr.error("Error - 4 ::: " + e.message);
+        }
+    }
+</script>

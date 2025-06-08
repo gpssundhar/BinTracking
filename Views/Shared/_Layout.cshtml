@@ -23,7 +23,7 @@
             <nav id="sidebar">
                 <ul class="navbar-item theme-brand flex-row  text-center">
                     <li class="nav-item theme-logo">
-                        <a href="dashboard.html">
+                        <a href="#">
                             <img src="~/assets/img/SakthiAutomotiveLogo.png" class="navbar-logo mr-3" width="100" alt="logo">
                         </a>
                     </li>
@@ -125,15 +125,19 @@
                         <ul class="collapse submenu list-unstyled" id="reports" data-parent="#accordionExample">
 
                             <li hidden id="mnuRptStkAdjust">
-                                <a href="@Url.Action("RptStockAdjust","Report")">Stock Adjustemnt </a>
+                                <a href="@Url.Action("RptStockAdjust","Report")?ip=@objMas.AppEncrypt(Globals.MNU_RPT_STOCKADJUST.ToString())">Stock Adjust </a>
+                            </li>
+                            
+                            <li hidden id="mnuRptCustStkAdjust">
+                                <a href="@Url.Action("RptStockAdjust","Report")?ip=@objMas.AppEncrypt(Globals.MNU_RPT_CUSTSTOCKADJUST.ToString())">Customer Stock Adjust </a>
                             </li>
 
                             <li hidden id="mnuRptInventory">
-                                <a href="@Url.Action("RptInventory","Report")">Inventory </a>
+                                <a href="@Url.Action("RptInventory","Report")?ip=@objMas.AppEncrypt(Globals.MNU_RPT_INVENTORY.ToString())">Inventory </a>
                             </li>
 
                             <li hidden id="mnuRptCusInventory">
-                                <a href="@Url.Action("RptCustomerInventory","Report")">Customer Inventory </a>
+                                <a href="@Url.Action("RptInventory","Report")?ip=@objMas.AppEncrypt(Globals.MNU_RPT_CUSTOMERINVENTORY.ToString())">Customer Inventory </a>
                             </li>
 
                         </ul>
@@ -169,17 +173,17 @@
                                     <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="userProfileDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         <span>
                                             <img src="~/assets/img/manager.png" alt="avatar">
-                                            <span class="user_name">Durai Murugan</span>
+                                            <span class="user_name">@Request.Cookies.Get(Globals.COOKIE_LGNEMPDESC).Value</span>
                                         </span>
                                     </a>
                                     <div class="dropdown-menu position-absolute" aria-labelledby="userProfileDropdown">
                                         <div class="nav-drop is-account-dropdown">
                                             <div class="inner">
-                                                <div class="nav-drop-header mb-2 px-2">
+                                                @*<div class="nav-drop-header mb-2 px-2">
                                                     <span class="text-primary font-13">Welcome Admin !</span>
-                                                </div>
+                                                </div>*@
                                                 <div class="nav-drop-body account-items pb-0">
-                                                    <a id="profile-link" class="account-item" href="pages_profile.html">
+                                                    <a id="profile-link" class="account-item" href="#">
                                                         <div class="media align-center">
                                                             <div class="media-left">
                                                                 <div class="image">
@@ -187,14 +191,14 @@
                                                                 </div>
                                                             </div>
                                                             <div class="media-content ml-2">
-                                                                <h6 class="font-12 mb-0 strong">Sara</h6>
+                                                                <h6 class="font-12 mb-0 strong">@Request.Cookies.Get(Globals.COOKIE_LGNEMPDESC).Value</h6>
                                                             </div>
                                                             <div class="media-right">
                                                                 <i data-feather="check"></i>
                                                             </div>
                                                         </div>
                                                     </a>
-                                                    <a class="account-item" href="pages_profile.html">
+                                                    <a class="account-item" href="#">
                                                         <div class="media align-center">
                                                             <i class="las la-user font-20"></i>
                                                             <div class="media-content ml-3">
@@ -202,7 +206,7 @@
                                                             </div>
                                                         </div>
                                                     </a>
-                                                    <a class="account-item" href="pages_timeline.html">
+                                                    <a class="account-item" href="#">
                                                         <div class="media align-center">
                                                             <i class="las la-briefcase font-20"></i>
                                                             <div class="media-content ml-3">
@@ -210,7 +214,7 @@
                                                             </div>
                                                         </div>
                                                     </a>
-                                                    <a class="account-item" href="auth_lock_screen_3.html">
+                                                    <a class="account-item" href="#">
                                                         <div class="media align-center">
                                                             <i class="las la-lock font-20"></i>
                                                             <div class="media-content ml-3">
@@ -255,13 +259,13 @@
                                     <div class="nav-drop is-notification-dropdown">
                                         <div class="inner">
                                             <div class="nav-drop-header">
-                                                <span class="text-black font-12 strong">5 Notifications</span>
+                                                <span class="text-black font-12 strong">0 Notifications</span>
                                                 <a class="text-muted font-12" href="#">
                                                     Clear All
                                                 </a>
                                             </div>
                                             <div class="nav-drop-body account-items pb-0">
-                                                <a class="account-item" href="apps_ecommerce_orders.html">
+                                                @*<a class="account-item" href="apps_ecommerce_orders.html">
                                                     <div class="media align-center">
                                                         <div class="icon-wrap">
                                                             <i class="las la-box font-20"></i>
@@ -304,10 +308,10 @@
                                                             <p class="m-0 mt-1 font-10 text-muted">1 day ago</p>
                                                         </div>
                                                     </div>
-                                                </a>
+                                                </a>*@
                                                 <hr class="account-divider">
                                                 <div class="text-center">
-                                                    <a class="text-primary strong font-13" href="pages_notifications.html">View All</a>
+                                                    <a class="text-primary strong font-13" href="#">View All</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -428,7 +432,7 @@
                     var i, j, k;
                     var mnuHdr = [mnuTypDashboard, mnuTypMaster, mnuTypService, mnuTypeReport];
                     var mnuSub = [[mnuDasDashboard], [mnuMasEmployee, mnuMasTransporter, mnuMasShift, mnuMasProducts, mnuMasCustomers, mnuMasReason, mnuMasPgAction],
-                    [mnuSerInventory, mnuSerStkAdjust], [mnuRptStkAdjust, mnuRptInventory, mnuRptCusInventory]];
+                    [mnuSerInventory, mnuSerStkAdjust], [mnuRptStkAdjust, mnuRptCustStkAdjust, mnuRptInventory, mnuRptCusInventory]];
 
                     i = j = k = 0;
 

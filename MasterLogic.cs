@@ -1846,6 +1846,7 @@ public class MasterLogic
                     }
                 }
 
+
                 for (i = 0; i < dtRpt.Rows.Count; i++) // Adding Data into rows
                 {
                     if (SubTotStRow != 0 && i != 0)

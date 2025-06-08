@@ -91,7 +91,7 @@ namespace SakthiAutomotive.Models
         public string ContactNo { get; set; }
         public int Status { get; set; }
     }
-    
+
     public class mdlTransporter_Save
     {
         public int TransporterId { get; set; }
@@ -142,7 +142,7 @@ namespace SakthiAutomotive.Models
         public int Status { get; set; }
 
     }
-    
+
     public class mdlProduct_Save
     {
         public int ProductId { get; set; }
@@ -188,5 +188,60 @@ namespace SakthiAutomotive.Models
         public int ReasonId { get; set; }
         public string ReasonDesc { get; set; }
         public int Status { get; set; }
+    }
+
+    //*****************************     Report      ****************************
+
+
+    public class mdlRptStockAdj_Pg
+    {
+        public List<ddlValues> ddlCustomer { get; set; }
+    }
+    public class mdlStockAdjust_Rpt
+    {
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public long CustId { get; set; }
+        public int Format { get; set; }
+        public int PgIdx { get; set; }
+    }
+    
+
+    public class mdlStockAdjust_Grid
+    {
+        public string EmpName { get; set; }
+        public string CustDesc { get; set; }
+        public string ProductDesc { get; set; }
+        public int AdjustQty { get; set; }
+        public int Stock { get; set; }
+        public string SlNos { get; set; }
+        public string ReasonDesc { get; set; }
+    }
+
+
+    public class mdlRptInventory_Pg
+    {
+        public List<ddlValues> ddlCustomer { get; set; }
+    }
+
+    public class mdlRpt_Inventory_Rpt
+    {
+        public long CustId { get; set; }
+        public int Format { get; set; }
+        public int PgIdx { get; set; }
+    }
+
+    public class mdlInventory_Grid
+    {
+        public string CustDesc { get; set; }
+        public int ProductId { get; set; }
+        public string ProductDesc { get; set; }
+        public string Barcode { get; set; }
+        public int BarcodeQty { get; set; }
+    }
+
+    public class mdlInventorySLNo
+    {
+        public string Barcode { get; set; }
     }
 }

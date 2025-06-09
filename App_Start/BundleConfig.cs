@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace SakthiAutomotive
+namespace BinTracking
 {
     public class BundleConfig
     {

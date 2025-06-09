@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace SakthiAutomotive
+namespace BinTracking
 {
     public class FilterConfig
     {

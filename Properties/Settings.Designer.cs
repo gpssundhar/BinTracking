@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SakthiAutomotive.Properties {
+namespace BinTracking.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace SakthiAutomotive.Controllers
+namespace BinTracking.Controllers
 {
     public class ServiceController : Controller
     {

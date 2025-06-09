@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
-using SakthiAutomotive.Models;
+using BinTracking.Models;
 
-namespace SakthiAutomotive.Controllers
+namespace BinTracking.Controllers
 {
     public class MasterController : Controller
     {

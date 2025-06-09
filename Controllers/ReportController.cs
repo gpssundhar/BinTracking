@@ -8,9 +8,9 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using OfficeOpenXml;
-using SakthiAutomotive.Models;
+using BinTracking.Models;
 
-namespace SakthiAutomotive.Controllers
+namespace BinTracking.Controllers
 {
     public class ReportController : Controller
     {

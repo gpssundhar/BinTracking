@@ -7,28 +7,62 @@
     <div class="mb-2">
         <div class="widget-content widget-content-area date-table-container">
             <div class="filter-section mb-4">
-                <h4 class="table-header" style="color: var(--primary-color);">Stock Adjustment</h4>
+                <h4 id="lblHeader" class="table-header" style="color: var(--primary-color);">Stock Adjustment</h4>
             </div>
 
             <div class="row">
+                <div id="dvCustomer" class="col-sm-3 searchformfld">
+                    <label>Customer</label>
+                    <select class="form-control form-select form-select" id="ddlCustomer">
+                        <option value="0" selected>Select</option>
+                        @if (Model.ddlCustomer != null && Model.ddlCustomer.Count >= 1)
+                        {
+                            foreach (var item in Model.ddlCustomer)
+                            {
+                                <option value="@item.ddlId">@item.ddlDesc</option>
+                            }
+                        }
+                    </select>
+                </div>
+
                 <div class="col-sm-3 searchformfld">
-                    <label for="">Product</label>
-                    <select class="form-control form-select">
-                        <option value="0">Active</option>
-                        <option value="1">Inactive</option>
+                    <label>Product</label>
+                    <select class="form-control form-select form-select" id="ddlProduct" onchange="LoadGrid()">
+                        <option value="0" selected>Select</option>
+                        @if (Model.ddlProduct != null && Model.ddlProduct.Count >= 1)
+                        {
+                            foreach (var item in Model.ddlProduct)
+                            {
+                                <option value="@item.ddlId">@item.ddlDesc</option>
+                            }
+                        }
                     </select>
                 </div>
                 <div class="col-sm-3 searchformfld">
                     <label for="">Stock</label>
-                    <input type="text" name="Stock" value="5" class="form-control" disabled>
+                    <input type="text" name="Stock" value="5" class="form-control" disabled style="color: black; background-color: white;" id="txtStock">
                 </div>
                 <div class="col-sm-2 searchformfld">
                     <label for="">Adjust Quantity</label>
-                    <input type="number" name="Adjust_Quantity" maxlength="4" class="form-control">
+                    <input type="number" name="Adjust_Quantity" maxlength="4" class="form-control" onkeydown="if(event.key==='.'){event.preventDefault();}"
+                           inputmode="numeric" oninput="event.target.value = event.target.value.replace(/[^0-9]*/g,'').slice(0, 7); updateFinalQuantity();" id="txtAdjQty">
                 </div>
                 <div class="col-sm-2 searchformfld">
                     <label for="">Final Quantity</label>
-                    <input type="text" name="Final_Quantity" value="5" class="form-control" disabled>
+                    <input type="text" name="Final_Quantity" value="5" class="form-control" disabled style="color:black;background-color:white;" id="txtRemStock">
+                </div>
+                <div class="col-sm-3 searchformfld">
+                    <label>Reason</label>
+                    <select class="form-control form-select form-select" id="ddlReason">
+                        <option value="0" selected>Select</option>
+                        @if (Model.ddlReason != null && Model.ddlReason.Count >= 1)
+                        {
+                            foreach (var item in Model.ddlReason)
+                            {
+                                <option value="@item.ddlId">@item.ddlDesc</option>
+                            }
+                        }
+                    </select>
                 </div>
                 <div class="col-sm-2 searchformfld">
                     <div class="acc-header">
@@ -43,39 +77,13 @@
 
                         <div id="stockadjust" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <table id="basic-dt" class="table table-hover" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Barcode</th>
-                                            <th>Serial Number</th>
-                                            <th>Select</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td><img src="assets/img/qrcode.png" alt="" width="35" height="35"></td>
-                                            <td>123456879</td>
-                                            <td><input type="checkbox" class="form-check"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td><img src="assets/img/qrcode.png" alt="" width="35" height="35"></td>
-                                            <td>123456879</td>
-                                            <td><input type="checkbox" class="form-check"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td><img src="assets/img/qrcode.png" alt="" width="35" height="35"></td>
-                                            <td>123456879</td>
-                                            <td><input type="checkbox" class="form-check"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <table id="hdrtblGrid" class="table table-hover" style="width:100%"></table>
                                 <div class="row">
                                     <div class="col-sm-12 barcode_btn">
-                                        <button type="button" class="btn btn-info">Adjust</button>
+                                        @if (ViewBag.PgAction[0] == '1')
+                                        {
+                                            <button type="button" class="btn btn-info" onclick="fnSave()">Adjust</button>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -87,3 +95,198 @@
     </div>
 </div>
 <!-- Main Body Ends -->
+<script>
+    $(document).ready(function () {
+        document.getElementById("dvCustomer").style.display = "@ViewBag.dvCust";
+        $("#lblHeader").text("@ViewBag.lblHeader");
+        fnClear();
+    });
+
+    function updateFinalQuantity() {
+        const stockInput = document.getElementById('txtStock');
+        const adjQtyInput = document.getElementById('txtAdjQty');
+        const finalQtyInput = document.getElementById('txtRemStock');
+
+        const stock = parseInt(stockInput.value) || 0;
+        let adjQty = parseInt(adjQtyInput.value) || 0;
+
+        // Prevent entering a value more than stock
+        if (adjQty > stock) {
+            adjQty = stock;
+            adjQtyInput.value = stock; // reset input value
+        }
+
+        // Update final quantity
+        finalQtyInput.value = stock - adjQty;
+    }
+
+    function fnClear() {
+        $('#ddlCustomer').val("0");
+        $('#ddlProduct').val("0").trigger('change');
+        $('#txtStock').val("");
+        $('#txtAdjQty').val("");
+        $('#txtRemStock').val("");
+        $('#ddlReason').val("0");
+    }
+
+
+    function LoadGrid() {
+        try {
+            var dataset = new Array();
+            var Customer = $('#ddlCustomer').val();
+            var Product = $('#ddlProduct').val();
+
+            @*if (@ViewBag.Mnu == @Globals.MNU_SRV_CUSTINVENTORY && Customer == "0") {
+                toastr.error('Select Customer');
+                $("#ddlCustomer").focus();
+                return;
+            }
+            if (Product == "0") {
+                toastr.error('Select Product');
+                $("#ddlProduct").focus();
+                return;
+            }*@
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("StockBarcode_Grid", "Service")',
+                data: JSON.stringify({
+                    "CustId": Customer,
+                    "ProductId": Product
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (jsonData) {
+                    var i = 0;
+                    var len = 0;
+
+                    if ($.fn.DataTable.fnIsDataTable("#hdrtblGrid"))
+                        $("#hdrtblGrid").dataTable().fnDestroy();
+
+                    if (jsonData == null)
+                        return;
+
+                    len = jsonData.length;
+
+                    $('#txtStock').val(len);
+
+                    for (i = 0; i < len; i++) {
+                        dataset.push([(i + 1), jsonData[i].Barcode, jsonData[i].SlNo]);
+                    }
+
+                    $('#hdrtblGrid').DataTable({
+                        autoWidth: true,
+                        paging: false,
+                        searching: true,
+                        ordering: false,
+                        data: dataset,
+                        columns: [{ title: "#", width: "1%" },{ title: "Barcode" },{ title: "Serial Number" },{ title: "Action", width: "10%" }],
+                        columnDefs: [
+                            {
+                                targets: 3,         // Index of the "Action" column
+                                orderable: false,
+                                searchable: false,
+                                render: function (data, type, row, meta) {
+                                    return `<input type="checkbox" value="${row[2]}" id="txtBarcode${meta.row}">`;
+                                }
+                            }
+                        ]
+                    });
+                    $('#hdrtblGrid_info').remove();
+
+                }
+            });
+        }
+        catch (e) {
+            alert("Error - 2 \n " + e.message);
+        }
+    }
+
+    function fnSave() {
+        try {
+            var arrActionValues = [];
+            var Customer = $('#ddlCustomer').val();
+            var Product = $('#ddlProduct').val();
+            var AdjQty = $('#txtAdjQty').val();
+            var RemQty = $('#txtRemStock').val();
+            var Reason = $('#ddlReason').val();
+            var SlNos = '';
+
+            if (@ViewBag.Mnu == @Globals.MNU_SRV_CUSTINVENTORY && Customer == "0") {
+                toastr.error('Select Customer');
+                $("#ddlCustomer").focus();
+                return;
+            }
+            if (Product == "0") {
+                toastr.error('Select Product');
+                $("#ddlProduct").focus();
+                return;
+            }
+
+            if (Reason == "0") {
+                toastr.error('Select Reason');
+                $("#ddlReason").focus();
+                return;
+            }
+
+            var i = -1;
+
+            $("#hdrtblGrid TBODY TR").each(function () {
+                var selChb = {};
+
+                i++;
+                selChb.SlNo = ($('#txtBarcode' + i).is(":checked") == true ? $('#txtBarcode' + i).val() : '');
+                SlNos += ($('#txtBarcode' + i).is(":checked") == true ? $('#txtBarcode' + i).val() + ',' : '');
+
+
+                if (!(selChb.SlNo == ''))
+                    arrActionValues.push(selChb);
+            });
+            if (SlNos.length != 0)
+                SlNos = SlNos.slice(0, -1);
+            console.log(arrActionValues);
+            console.log(SlNos);
+            if (arrActionValues.length != AdjQty) {
+                toastr.error('Adjust Quantity and Selected Barcode count Mismatch');
+                $("#txtAdjQty").focus();
+                return;
+            }
+            var payload = {
+                CustId: Customer,
+                ProductId: Product,
+                Mnu: '@ViewBag.Mnu',
+                AdjustQty: AdjQty,
+                Stock: RemQty,
+                ReasonId: Reason,
+                SlNoList: arrActionValues,
+                SlNos: SlNos
+            };
+
+            console.log(payload);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("StockAdjust_Save", "Service")',
+                data: JSON.stringify(payload),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response.Success == 0)
+                        toastr.error(response.Message);
+                    else if (response.Success == 1) {
+                        toastr.success(response.Message);
+                        //LoadGrid();
+                        fnClear();
+                    }
+                    else if (response.Success == 3) {
+                        $("#txtAlaert").text('@Globals.SESSION_TIMEOUT');
+                        $("#AlertModal").modal({ backdrop: 'static', keyboard: false }, "show");
+                    }
+                }
+            });
+        }
+        catch (e) {
+            alert("Error - 3 \n " + e.message);
+
+        }
+    }
+
+</script>

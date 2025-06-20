@@ -8,8 +8,11 @@
         <div class="widget-content widget-content-area br-6 date-table-container">
             <div class="filter-section mb-4">
                 <h4 class="table-header">Transport Master</h4>
-                <button class="btn" onclick="fnClear(1)" style="background: var(--primary-color);color: white;"><i class="las la-plus-circle la-lg"></i>Add</button>
-            </div>
+                @if (ViewBag.PgAction[0] == '1')
+                {
+                    <button class="btn" onclick="fnClear(1)" style="background: var(--primary-color);color: white;"><i class="las la-plus-circle la-lg"></i>Add</button>
+                }
+                </div>
 
             <div class="filter-section row mb-4">
                 <div class="col-sm-2">
@@ -67,15 +70,15 @@
                 <div class="row align-items-end">
                     <div class="col-sm-3 searchformfld">
                         <label>Vehicle Type</label>
-                        <input type="text" class="form-control" id="txtVehicleType" maxlength="40" placeholder=" ">
+                        <input type="text" class="form-control" id="txtVehicleType" maxlength="40" placeholder=" " autocomplete="off">
                     </div>
                     <div class="col-sm-3 searchformfld">
                         <label>Vehicle Number</label>
-                        <input type="text" class="form-control" id="txtVehicleNo" maxlength="20" placeholder=" ">
+                        <input type="text" class="form-control" id="txtVehicleNo" maxlength="20" placeholder=" " autocomplete="off">
                     </div>
                     <div class="col-sm-3 searchformfld">
                         <label>Remarks</label>
-                        <input type="text" class="form-control" id="txtRemarks" maxlength="200" placeholder=" ">
+                        <input type="text" class="form-control" id="txtRemarks" maxlength="200" placeholder=" " autocomplete="off">
                     </div>
                     <div class="col-sm-4">
                         <button class="btn btn-success mt-4" onclick="addVehicle()"><i class="las la-plus"></i> Add</button>
@@ -137,7 +140,7 @@
                             "title=\"Delete\" onclick=\"fnDelete(" + jsonData[i].TransporterId + ",'" + jsonData[i].TransporterDesc + "')\" " +
                             "><i class=\"las la-trash-alt la-lg text-danger\" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a></div>" : "";
 
-                        dataset.push([(i + 1), jsonData[i].TransporterCode, jsonData[i].TransporterDesc, jsonData[i].ContactNo,
+                        dataset.push([(i + 1), jsonData[i].TransporterCode, jsonData[i].TransporterDesc, jsonData[i].ContactNo,jsonData[i].Vehicles,
                         "<div class=\"d-inline\">" + _edit + _delete + "</div>"]);
                     }
 
@@ -153,7 +156,7 @@
                         "pageLength": 10,
 
                         data: dataset,
-                        columns: [{ title: "#", width: "1%" }, { title: "Code" }, { title: "Name" }, { title: "Contact" }, { title: "Action", width: "10%" }]
+                        columns: [{ title: "#", width: "1%" }, { title: "Code" }, { title: "Name" }, { title: "Contact" }, { title: "Vehicles" }, { title: "Action", width: "10%" }]
                     });
                 }
             });

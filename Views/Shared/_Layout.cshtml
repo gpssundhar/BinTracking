@@ -102,11 +102,19 @@
                         <ul class="collapse submenu list-unstyled" id="services" data-parent="#accordionExample">
 
                             <li hidden id="mnuSerInventory">
-                                <a href="@Url.Action("Inventory","Service")"> Inventory </a>
+                                <a href="@Url.Action("Inventory","Service")?ip=@objMas.AppEncrypt(Globals.MNU_SRV_INVENTORY.ToString())">Inventory </a>
+                            </li>
+                            
+                            <li hidden id="mnuSerCustInventory">
+                                <a href="@Url.Action("Inventory","Service")?ip=@objMas.AppEncrypt(Globals.MNU_SRV_CUSTINVENTORY.ToString())">Customer Inventory </a>
                             </li>
 
                             <li hidden id="mnuSerStkAdjust">
-                                <a href="@Url.Action("StockAdjust","Service")"> Stock Adjustemnt </a>
+                                <a href="@Url.Action("StockAdjust","Service")?ip=@objMas.AppEncrypt(Globals.MNU_SRV_STOCKADJUST.ToString())">Stock Adjustment </a>
+                            </li>
+
+                            <li hidden id="mnuSerCustStkAdjust">
+                                <a href="@Url.Action("StockAdjust","Service")?ip=@objMas.AppEncrypt(Globals.MNU_SRV_CUSTSTOCKADJUST.ToString())">Customer Stock Adjustment </a>
                             </li>
 
                         </ul>
@@ -124,20 +132,20 @@
                         </a>
                         <ul class="collapse submenu list-unstyled" id="reports" data-parent="#accordionExample">
 
-                            <li hidden id="mnuRptStkAdjust">
-                                <a href="@Url.Action("RptStockAdjust","Report")?ip=@objMas.AppEncrypt(Globals.MNU_RPT_STOCKADJUST.ToString())">Stock Adjust </a>
-                            </li>
-                            
-                            <li hidden id="mnuRptCustStkAdjust">
-                                <a href="@Url.Action("RptStockAdjust","Report")?ip=@objMas.AppEncrypt(Globals.MNU_RPT_CUSTSTOCKADJUST.ToString())">Customer Stock Adjust </a>
-                            </li>
-
                             <li hidden id="mnuRptInventory">
                                 <a href="@Url.Action("RptInventory","Report")?ip=@objMas.AppEncrypt(Globals.MNU_RPT_INVENTORY.ToString())">Inventory </a>
                             </li>
 
                             <li hidden id="mnuRptCusInventory">
                                 <a href="@Url.Action("RptInventory","Report")?ip=@objMas.AppEncrypt(Globals.MNU_RPT_CUSTOMERINVENTORY.ToString())">Customer Inventory </a>
+                            </li>
+
+                            <li hidden id="mnuRptStkAdjust">
+                                <a href="@Url.Action("RptStockAdjust","Report")?ip=@objMas.AppEncrypt(Globals.MNU_RPT_STOCKADJUST.ToString())">Stock Adjust </a>
+                            </li>
+
+                            <li hidden id="mnuRptCustStkAdjust">
+                                <a href="@Url.Action("RptStockAdjust","Report")?ip=@objMas.AppEncrypt(Globals.MNU_RPT_CUSTSTOCKADJUST.ToString())">Customer Stock Adjust </a>
                             </li>
 
                         </ul>
@@ -432,7 +440,7 @@
                     var i, j, k;
                     var mnuHdr = [mnuTypDashboard, mnuTypMaster, mnuTypService, mnuTypeReport];
                     var mnuSub = [[mnuDasDashboard], [mnuMasEmployee, mnuMasTransporter, mnuMasShift, mnuMasProducts, mnuMasCustomers, mnuMasReason, mnuMasPgAction],
-                    [mnuSerInventory, mnuSerStkAdjust], [mnuRptStkAdjust, mnuRptCustStkAdjust, mnuRptInventory, mnuRptCusInventory]];
+                        [mnuSerInventory, mnuSerCustInventory, mnuSerStkAdjust, mnuSerCustStkAdjust], [mnuRptInventory, mnuRptCusInventory, mnuRptStkAdjust, mnuRptCustStkAdjust]];
 
                     i = j = k = 0;
 

@@ -154,7 +154,7 @@ namespace BinTracking.Controllers
         }
 
 
-        public ActionResult RptInventory(string ip)
+        public ActionResult RptInventory(string ip =null)
         {
             string MTHDNAME = "RptInventory";
             try

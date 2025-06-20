@@ -174,6 +174,7 @@
     <Content Include="assets\img\AutoMobBg.jpg" />
     <Content Include="assets\img\battery.png" />
     <Content Include="assets\img\bin2.png" />
+    <Content Include="assets\img\BinTrackingLogo.png" />
     <Content Include="assets\img\cart.png" />
     <Content Include="assets\img\chevron-down-solid %281%29.svg" />
     <Content Include="assets\img\chevron-down-solid.png" />
@@ -185,7 +186,6 @@
     <Content Include="assets\img\logo.png" />
     <Content Include="assets\img\manager.png" />
     <Content Include="assets\img\qrcode.png" />
-    <Content Include="assets\img\SakthiAutomotiveLogo.png" />
     <Content Include="assets\img\suspension.png" />
     <Content Include="assets\img\trips.png" />
     <Content Include="assets\img\trolley.png" />
@@ -200,6 +200,7 @@
     <Content Include="assets\js\owl.carousel.js" />
     <Content Include="assets\js\owl.carousel.min.js" />
     <Content Include="assets\js\toastr.min.js" />
+    <Content Include="BinTracking_Database.sql" />
     <Content Include="bootstrap5\css\bootstrap.css" />
     <Content Include="bootstrap5\css\bootstrap.min.css" />
     <Content Include="bootstrap5\js\bootstrap.js" />
@@ -210,8 +211,14 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="fonts\la-brands-400.svg" />
+    <Content Include="fonts\la-regular-400.svg" />
+    <Content Include="fonts\la-solid-900.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Layout\fonts\la-brands-400.svg" />
+    <Content Include="Layout\fonts\la-regular-400.svg" />
+    <Content Include="Layout\fonts\la-solid-900.svg" />
     <Content Include="line-awesome-1.3.0\1.3.0\css\line-awesome.min.css" />
     <Content Include="line-awesome-1.3.0\1.3.0\fonts\la-brands-400.svg" />
     <Content Include="line-awesome-1.3.0\1.3.0\fonts\la-regular-400.svg" />
@@ -256,6 +263,30 @@
     <Content Include="line-awesome-1.3.0\1.3.0\fonts\la-solid-900.ttf" />
     <Content Include="line-awesome-1.3.0\1.3.0\fonts\la-solid-900.woff" />
     <Content Include="line-awesome-1.3.0\1.3.0\fonts\la-solid-900.woff2" />
+    <Content Include="fonts\la-brands-400.eot" />
+    <Content Include="fonts\la-brands-400.ttf" />
+    <Content Include="fonts\la-brands-400.woff" />
+    <Content Include="fonts\la-brands-400.woff2" />
+    <Content Include="fonts\la-regular-400.eot" />
+    <Content Include="fonts\la-regular-400.ttf" />
+    <Content Include="fonts\la-regular-400.woff" />
+    <Content Include="fonts\la-regular-400.woff2" />
+    <Content Include="fonts\la-solid-900.eot" />
+    <Content Include="fonts\la-solid-900.ttf" />
+    <Content Include="fonts\la-solid-900.woff" />
+    <Content Include="fonts\la-solid-900.woff2" />
+    <Content Include="Layout\fonts\la-brands-400.eot" />
+    <Content Include="Layout\fonts\la-brands-400.ttf" />
+    <Content Include="Layout\fonts\la-brands-400.woff" />
+    <Content Include="Layout\fonts\la-brands-400.woff2" />
+    <Content Include="Layout\fonts\la-regular-400.eot" />
+    <Content Include="Layout\fonts\la-regular-400.ttf" />
+    <Content Include="Layout\fonts\la-regular-400.woff" />
+    <Content Include="Layout\fonts\la-regular-400.woff2" />
+    <Content Include="Layout\fonts\la-solid-900.eot" />
+    <Content Include="Layout\fonts\la-solid-900.ttf" />
+    <Content Include="Layout\fonts\la-solid-900.woff" />
+    <Content Include="Layout\fonts\la-solid-900.woff2" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -271,6 +302,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="SOP_BinTracking.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

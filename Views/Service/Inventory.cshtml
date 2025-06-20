@@ -7,37 +7,59 @@
     <div class="mb-2">
         <div class="widget-content widget-content-area date-table-container">
             <div class="filter-section mb-4">
-                <h4 class="table-header" style="color: var(--primary-color);">Inventory</h4>
+                <h4 id="lblHeader" class="table-header" style="color: var(--primary-color);">Inventory</h4>
             </div>
 
             <form action="">
                 <div class="row mb-2" style="display: flex;align-items: center;">
+                    <div id="dvCustomer" class="col-sm-3 searchformfld">
+                        <label>Customer</label>
+                        <select class="form-control form-select form-select" id="ddlCustomer">
+                            <option value="0" selected>Select</option>
+                            @if (Model.ddlCustomer != null && Model.ddlCustomer.Count >= 1)
+                            {
+                                foreach (var item in Model.ddlCustomer)
+                                {
+                                    <option value="@item.ddlId">@item.ddlDesc</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
                     <div class="col-sm-3 searchformfld">
                         <label>Product</label>
-                        <select class="form-control form-select form-select    " id="ddlStatus">
-                            <option>Product 1</option>
-                            <option>Product 2</option>
-                            <option>Product 3</option>
-                            <option>Product 4</option>
+                        <select class="form-control form-select form-select" id="ddlProduct">
+                            <option value="0" selected>Select</option>
+                            @if (Model.ddlProduct != null && Model.ddlProduct.Count >= 1)
+                            {
+                                foreach (var item in Model.ddlProduct)
+                                {
+                                    <option value="@item.ddlId">@item.ddlDesc</option>
+                                }
+                            }
                         </select>
                     </div>
 
                     <div class="col-sm-2 searchformfld">
-                        <input type="number" class="form-control" maxlength="4" placeholder=" ">
+                        <input type="number" class="form-control" id="txtQuantity" placeholder=" " onkeydown="if(event.key==='.'){event.preventDefault();}"
+                               inputmode="numeric" oninput="event.target.value = event.target.value.replace(/[^0-9]*/g,'').slice(0, 7);">
                         <label class="mb-0">Quantity</label>
                     </div>
 
-                    <div class="col-sm-7 searchformfld">
-                        <textarea name="Remarks" class="form-control" rows="3" cols="3"></textarea>
-                        <label class="mb-0">Remarks Name</label>
+                    <div class="col-sm-4 searchformfld">
+                        <textarea name="Remarks" class="form-control" id="txtRemarks" rows="3" cols="3"></textarea>
+                        <label class="mb-0">Remarks</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-4"></div>
                     <div class="col-sm-4 inventory_savebtn">
-                        <button type="button" class="btn btn-primary">Save</button>
-                        <button class="btn btn-danger" type="reset">Clear</button>
-                    </div>
+                        @if (ViewBag.PgAction[0] == '1')
+                        {
+                            <button type="button" class="btn btn-primary" onclick="fnSave()">Save</button>
+                        }
+                            <button class="btn btn-danger" type="reset">Clear</button>
+                        </div>
                     <div class="col-sm-4"></div>
                 </div>
             </form>
@@ -46,3 +68,72 @@
     </div>
 </div>
 <!-- Main Body Ends -->
+<script>
+    $(document).ready(function () {
+        document.getElementById("dvCustomer").style.display = "@ViewBag.dvCust";
+        $("#lblHeader").text("@ViewBag.lblHeader");
+        fnClear();
+    });
+
+    function fnSave() {
+        try {
+            var i = 0;
+            var datas = [];
+            var Customer = $('#ddlCustomer').val();
+
+            var txtCtrl = ["ddlProduct", "txtQuantity", "txtRemarks"];
+            var Msgs = ["Product", "Quantity", ""];
+
+            if (@ViewBag.Mnu == @Globals.MNU_SRV_CUSTINVENTORY && Customer == "0") {
+                toastr.error('Select Customer');
+                $("#ddlCustomer").focus();
+                return;
+            }
+            for (i = 0; i < txtCtrl.length; i++) {
+                var element = document.getElementById(txtCtrl[i]);
+                if (element) {
+                    datas[i] = element.value;
+                    if ((datas[i].length == 0 || datas[i] == "0") && Msgs[i].length != 0) {
+                        toastr.error('Select ' + Msgs[i]);
+                        $("#" + txtCtrl[i]).focus();
+                        return;
+                    }
+                } else {
+                    console.log("Element not found: " + txtCtrl[i]);
+                }
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Inventory_Save", "Service")',
+                data: JSON.stringify({
+                    "CustId": Customer,
+                    "ProductId": datas[0],
+                    "Quantity": datas[1],
+                    "Remarks": datas[2],
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response.Success == 0)
+                        toastr.error(response.Message);
+                    else if (response.Success == 1) {
+                        toastr.success(response.Message);
+                        fnClear();
+                    }
+                    else
+                        toastr.error('something went wrong' + response.Message);
+                }
+            });
+        } catch (e) {
+            toastr.error("Error - 3 \n " + e.message);
+        }
+    }
+
+    function fnClear() {
+        $('#ddlCustomer').val("0");
+        $('#ddlProduct').val("0");
+        $('#txtQuantity').val("");
+        $('#txtRemarks').val("");
+    }
+</script>

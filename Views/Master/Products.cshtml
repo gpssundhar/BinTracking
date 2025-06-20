@@ -8,8 +8,11 @@
         <div class="widget-content widget-content-area date-table-container">
             <div class="filter-section mb-4">
                 <h4 class="table-header" style="color: var(--primary-color);">Product Master</h4>
-                <button class="btn" onclick="fnClear(1)" style="background: var(--primary-color);color: white;"><i class="las la-plus-circle la-lg"></i>Add</button>
-            </div>
+                @if (ViewBag.PgAction[0] == '1')
+                {
+                    <button class="btn" onclick="fnClear(1)" style="background: var(--primary-color);color: white;"><i class="las la-plus-circle la-lg"></i>Add</button>
+                }
+                </div>
 
             <div class="filter-section row mb-4">
                 <div class="col-sm-2">
@@ -52,10 +55,10 @@
                         <label class="mb-0">Product</label>
                     </div>
 
-                    <div class="col-sm-4 searchformfld">
+                    @*<div class="col-sm-4 searchformfld">
                         <input type="number" class="form-control EMS-inputfields" placeholder=" " id="txtIpStock" maxlength="7" onkeypress="return NumbersWithDot(event,1)" ondrop="return false">
                         <label class="mb-0">Stock</label>
-                    </div>
+                    </div>*@
 
                     <div class="col-sm-4 searchformfld">
                         <label> Status</label>
@@ -106,7 +109,7 @@
                     for (i = 0; i < len; i++) {
                         var _edit = @ViewBag.PgAction[1] == '1' ? "<a href=\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" data-toggle=\"modal\" " +
                             "title=\"Edit\" style=\"margin-right:10px;\" onclick=\"fnEdit(" + jsonData[i].ProductId + ", '" + jsonData[i].ProductCode + "', '" +
-                            jsonData[i].ProductDesc + "', '" + jsonData[i].Stock + "', '" + jsonData[i].Status +
+                            jsonData[i].ProductDesc + "', '" + jsonData[i].Status +
                             "')\"><i class=\"las la-edit la-lg \" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a> " : "";
 
                         var _delete = (@ViewBag.PgAction[2] == '1' && Status == @Globals.STATUS_ACTIVE) ? " <a href =\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" " +
@@ -146,8 +149,8 @@
             var ShiftId = $('#hdnId').val();
             var Status = $('#ddlStatus').val();
 
-            var txtCtrl = ["txtIpProdCode", "txtIpProdDesc", "txtIpStock"];
-            var Msgs = ["Product Code", "Product Name", "Stock"];
+            var txtCtrl = ["txtIpProdCode", "txtIpProdDesc"];
+            var Msgs = ["Product Code", "Product Name"];
 
             for (i = 0; i < txtCtrl.length; i++) {
                 var element = document.getElementById(txtCtrl[i]);
@@ -170,7 +173,7 @@
                     "ProductId": ShiftId,
                     "ProductCode": datas[0],
                     "ProductDesc": datas[1],
-                    "Stock": datas[2],
+                    //"Stock": datas[2],
                     "Status": Status
                 }),
                 contentType: "application/json; charset=utf-8",
@@ -198,7 +201,7 @@
             $('#hdnId').val("0");
             $('#txtIpProdCode').val("");
             $('#txtIpProdDesc').val("");
-            $('#txtIpStock').val("");
+            //$('#txtIpStock').val("");
             $('#ddlStatus').val("1");
             $('#mdlAddEdit').modal(modal == 1 ? "show" : "hide");
 
@@ -208,12 +211,12 @@
         }
     }
 
-    function fnEdit(Id, Code, Desc, Stock,Status) {
+    function fnEdit(Id, Code, Desc, Status) {
         try {
             $('#hdnId').val(Id);
             $('#txtIpProdCode').val(Code);
             $('#txtIpProdDesc').val(Desc);
-            $('#txtIpStock').val(Stock);
+            //$('#txtIpStock').val(Stock);
             $('#ddlStatus').val(Status);
             $('#mdlAddEdit').modal("show");
         }

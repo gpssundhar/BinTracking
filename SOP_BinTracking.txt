@@ -1,0 +1,330 @@
+﻿--Default Data
+--************
+
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (1, 101, N'Dashboard', N'00010', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 201, N'Employees', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 202, N'Transporter', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 203, N'Shifts', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 204, N'Products', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 205, N'Customers', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 206, N'Reason', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 207, N'Page Action', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 301, N'Inventory', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 302, N'Customer Inventory', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 303, N'Stock Adjust', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 304, N'Customer Stock Adjust', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 401, N'Stock Adjust Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 402, N'Customer Stock Adjust Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 403, N'Inventory Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 404, N'Customer Inventory Report', N'10011', 1);
+
+
+Insert into Employees (EmpId,EmpCode,EmpName,Email,Mobile,AppPwd,SessionId,[Status],CreatedOn) 
+select CONCAT('8',FORMAT(GETDATE(),'yyMMdd'),FORMAT(COUNT(1),'000')),'OTA','OTAADMIN','admin@otaindia.com','','otaadmin','',8,getdate();
+
+
+--Release - SOP	20-06-2025
+--***********	**********
+
+Truncate Table AppMenus;
+
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (1, 101, N'Dashboard', N'00010', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 201, N'Employees', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 202, N'Transporter', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 203, N'Shifts', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 204, N'Products', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 205, N'Customers', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 206, N'Reason', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 207, N'Page Action', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 301, N'Inventory', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 302, N'Customer Inventory', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 303, N'Stock Adjust', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 304, N'Customer Stock Adjust', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 401, N'Stock Adjust Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 402, N'Customer Stock Adjust Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 403, N'Inventory Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 404, N'Customer Inventory Report', N'10011', 1);
+
+
+ALTER TABLE [dbo].[StockInward] DROP CONSTRAINT [DF_StockInward_Status]
+GO
+
+ALTER TABLE [dbo].[StockInward] DROP CONSTRAINT [DF_StockInward_EmpId]
+GO
+
+ALTER TABLE [dbo].[StockInward] DROP CONSTRAINT [DF_StockInward_ToSlNo]
+GO
+
+ALTER TABLE [dbo].[StockInward] DROP CONSTRAINT [DF_StockInward_FromSlNo]
+GO
+
+ALTER TABLE [dbo].[StockInward] DROP CONSTRAINT [DF_StockInward_Quantity]
+GO
+
+ALTER TABLE [dbo].[StockInward] DROP CONSTRAINT [DF_StockInward_ProductId]
+GO
+
+ALTER TABLE [dbo].[StockInward] DROP CONSTRAINT [DF_StockInward_SDate]
+GO
+
+/****** Object:  Table [dbo].[StockInward]    Script Date: 20-06-2025 08:07:24 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[StockInward]') AND type in (N'U'))
+DROP TABLE [dbo].[StockInward]
+GO
+
+/****** Object:  Table [dbo].[StockInward]    Script Date: 20-06-2025 08:07:24 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[StockInward](
+	[SDate] [datetime] NOT NULL,
+	[ProductId] [int] NOT NULL,
+	[Quantity] [int] NOT NULL,
+	[FromSlNo] [int] NOT NULL,
+	[ToSlNo] [int] NOT NULL,
+	[EmpId] [bigint] NOT NULL,
+	[Remarks] [varchar](300) NOT NULL,
+	[Status] [int] NOT NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[StockInward] ADD  CONSTRAINT [DF_StockInward_SDate]  DEFAULT ('') FOR [SDate]
+GO
+
+ALTER TABLE [dbo].[StockInward] ADD  CONSTRAINT [DF_StockInward_ProductId]  DEFAULT ((0)) FOR [ProductId]
+GO
+
+ALTER TABLE [dbo].[StockInward] ADD  CONSTRAINT [DF_StockInward_Quantity]  DEFAULT ((0)) FOR [Quantity]
+GO
+
+ALTER TABLE [dbo].[StockInward] ADD  CONSTRAINT [DF_StockInward_FromSlNo]  DEFAULT ((0)) FOR [FromSlNo]
+GO
+
+ALTER TABLE [dbo].[StockInward] ADD  CONSTRAINT [DF_StockInward_ToSlNo]  DEFAULT ((0)) FOR [ToSlNo]
+GO
+
+ALTER TABLE [dbo].[StockInward] ADD  CONSTRAINT [DF_StockInward_EmpId]  DEFAULT ((0)) FOR [EmpId]
+GO
+
+ALTER TABLE [dbo].[StockInward] ADD  CONSTRAINT [DF_StockInward_Remarks]  DEFAULT ('') FOR [Remarks]
+GO
+
+ALTER TABLE [dbo].[StockInward] ADD  CONSTRAINT [DF_StockInward_Status]  DEFAULT ((1)) FOR [Status]
+GO
+
+
+CREATE Procedure [dbo].[Inventory_Save](@PgIdx int, @EmpId Bigint,@CustId bigint, @ProductId int, @Qty int, @Remarks Varchar(500), @ErrorMsg Varchar(1500) OUTPUT)
+As
+Begin
+declare @Cnt as int;
+Declare @PreBarcode as Varchar(50) = '';
+Declare @ProductDesc as Varchar(100) = '';
+DECLARE @Counter INT = 1;
+DECLARE @TotQty INT = 1;
+DECLARE @CurrentCount INT;
+DECLARE @ExistingCount INT;
+	Begin Try
+		Begin Transaction
+
+		SELECT @Cnt = CASE WHEN EXISTS (SELECT 1 FROM DBLog WHERE PgIdx = @PgIdx) THEN (SELECT MAX(SlNo) + 1 FROM DBLog WHERE PgIdx = @PgIdx)
+		ELSE 1 END;
+		
+		select @PreBarcode = CONCAT(ProductCode,@ProductId,FORMAT(GETDATE(),'yyMMdd'),COUNT(1)+1), @ExistingCount = Stock,
+		@ProductDesc = ProductDesc From Products Where ProductId = @ProductId Group By ProductCode,Stock,ProductDesc;
+		
+		Select @Counter = IIF(COUNT(1) = 0, 1, COUNT(1)+1) from ProductStock Where ProductId = @ProductId;
+		SET @TotQty = @Qty;
+		IF(@Counter != 1)
+			SET @TotQty = @Qty + @Counter - 1;
+		
+		Insert into StockInward (SDate,ProductId,Quantity,FromSlNo,ToSlNo,EmpId,Remarks, Status)
+		Values(Getdate(),@ProductId,@Qty,@Counter,@TotQty,@EmpId,@Remarks, 1);
+		
+		Insert into DBLog (PgIdx, EmpId, ProcName, SlNo, LogData, CreatedOn) Values(@PgIdx,@EmpId,'Inventory_Save',@Cnt,
+				'New Inventory For Product : ''' + @ProductDesc +''' Created. Quantity : '+ Cast(@Qty AS VARCHAR(7)), GETDATE());
+		Set @Cnt = @Cnt + 1;
+		
+		WHILE @Counter <= @TotQty
+		BEGIN
+			INSERT INTO ProductStock (ProductId, CustId, Barcode, SlNo, Status)
+			VALUES (@ProductId,@CustId,@PreBarcode + RIGHT('0000' + CAST(@Counter AS VARCHAR(4)), 4),@Counter,1);
+			
+			SET @Counter = @Counter + 1;
+		END;
+		Select @CurrentCount = Count(1) from ProductStock Where ProductId = @ProductId and Status = 1;
+		
+		Update Products Set Stock = @CurrentCount Where ProductId = @ProductId;
+
+		Insert into DBLog (PgIdx, EmpId, ProcName, SlNo, LogData, CreatedOn) Values(@PgIdx,@EmpId,'Inventory_Save',@Cnt,
+				'Stock Count Modified From ' + CAST(@ExistingCount AS VARCHAR(7)) +' To '+ CAST(@CurrentCount AS VARCHAR(7)), GETDATE());
+		Select @CurrentCount as a
+		Commit Transaction
+	End Try
+	Begin Catch
+		Rollback Transaction
+		if (len(@ErrorMsg) = 0)
+			set @ErrorMsg = ERROR_MESSAGE() + '\n Save Failed';
+		Select @ErrorMsg;
+	End Catch
+End
+
+
+ALTER PROCEDURE [dbo].[Product_Save] @PgIdx int, @ProductId int, @ProductCode VARCHAR(20),@ProductDesc VARCHAR(100),
+@Status Int, @ModifiedBy Bigint, @ErrorMsg VARCHAR(1000) OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+	declare @Cnt as int;
+	Declare @Old_Code as Varchar(20) = '';
+	Declare @Old_Name as Varchar(100) = '';
+	Declare @Old_Stock as Varchar(100) = '';
+	Declare @Old_Status as Int = 0;
+	Declare @Log_Msg as Varchar(1000) = '';
+
+	BEGIN TRY
+	IF(@ProductId = 0)
+		SELECT @Cnt = count(1) FROM Products WHERE ProductCode = @ProductCode;
+	ELSE
+		SELECT @Cnt = count(1) FROM Products WHERE ProductCode = @ProductCode and ProductId != @ProductId;
+	IF (@Cnt != 0)
+		BEGIN
+			SET @ErrorMsg = 'Product Code already exists'
+			RAISERROR (@ErrorMsg, 16, 1)
+		END
+
+	IF(@ProductId = 0)
+		SELECT @Cnt = count(1) FROM Products WHERE ProductDesc = @ProductDesc;
+	ELSE
+		SELECT @Cnt = count(1) FROM Products WHERE ProductDesc = @ProductDesc and ProductId != @ProductId;
+	IF (@Cnt != 0)
+		BEGIN
+			SET @ErrorMsg = 'Product Name already exists'
+			RAISERROR (@ErrorMsg, 16, 1)
+		END
+    
+	SELECT @Cnt = CASE WHEN EXISTS (SELECT 1 FROM DBLog WHERE PgIdx = @PgIdx) THEN (SELECT MAX(SlNo) + 1 FROM DBLog WHERE PgIdx = @PgIdx)
+		ELSE 1 END;
+	If(@ProductId = 0)
+		BEGIN
+			Select @ProductId = ISNULL(Max(ProductId),0)+1 from Products;
+
+			INSERT INTO Products (ProductId,ProductCode, ProductDesc, Stock, Status)
+			VALUES (@ProductId, @ProductCode, @ProductDesc, 0, @Status);
+
+			Insert into DBLog (PgIdx, EmpId, ProcName, SlNo, LogData, CreatedOn) Values(@PgIdx,@Modifiedby,'Product_save',@Cnt,
+				'New Product : ' + @ProductDesc +' Created', GETDATE());
+		END
+	ELSE
+		BEGIN
+			Select @Old_Code = ProductCode, @Old_Name = ProductDesc, @Old_Stock = Stock, @Old_Status = [Status] 
+				from Products Where ProductId = @ProductId;
+				If(@Old_Code != @ProductCode)
+					set @Log_Msg = 'Product Code,';
+				If(@Old_Name != @ProductDesc)
+					set @Log_Msg = @Log_Msg + 'Product Name,';
+				If(@Old_Status != @Status)
+					set @Log_Msg = @Log_Msg + 'Product Status,';
+
+				IF(Len(@Log_Msg) != 0)
+				BEGIN
+					SELECT @Log_Msg = LEFT(@Log_Msg, LEN(@Log_Msg) - 1);
+
+					Insert into DBLog (PgIdx, EmpId, ProcName, SlNo, LogData, CreatedOn) Values(@PgIdx,@Modifiedby,'Product_save',@Cnt,
+					'Product : ' + @Old_Name +' Modified '+ @Log_Msg, GETDATE());
+				END
+			Update Products Set ProductCode = @ProductCode, ProductDesc = @ProductDesc, Status=@Status
+			Where ProductId = @ProductId;
+		END
+	END TRY
+	BEGIN CATCH
+	if (len(@ErrorMsg) = 0)
+			set @ErrorMsg = ERROR_MESSAGE() + '\n Save Failed';
+		Select @ErrorMsg;
+	END CATCH
+END
+
+
+CREATE PROCEDURE [dbo].[StockAdjust_Save](@PgIdx int, @EmpId bigint, @CustId bigint, @ProductId int, @AdjType int, 
+@AdjQty int, @Stock int, @SlNos Varchar(max), @ReasonId int, @ErrorMsg Varchar(1500) OUTPUT)
+As
+Begin
+declare @Cnt as int;
+declare @StockAdjID as int;
+Declare @ProductDesc as Varchar(100) = '';
+DECLARE @CurrentCount INT;
+DECLARE @ExistingCount INT;
+	Begin Try
+		Begin Transaction
+		SELECT @Cnt = CASE WHEN EXISTS (SELECT 1 FROM DBLog WHERE PgIdx = @PgIdx) THEN (SELECT MAX(SlNo) + 1 FROM DBLog WHERE PgIdx = @PgIdx)
+		ELSE 1 END;
+
+		select @ExistingCount = Stock,@ProductDesc = ProductDesc From Products Where ProductId = @ProductId;
+
+		Select @StockAdjID = ISNULL(Max(StkAdjId),0)+1 from StockAdjust;
+
+		Insert into StockAdjust(StkAdjId,EmpId,CustId,ProductId,StkAdjType,AdjustQty,Stock,SlNos,ReasonId,[Status],CreatedOn) 
+		Values(@StockAdjID,@EmpId,@CustId,@ProductId,@AdjType,@AdjQty,@Stock,@SlNos,@ReasonId,1,GETDATE());
+
+		Insert into DBLog (PgIdx, EmpId, ProcName, SlNo, LogData, CreatedOn) Values(@PgIdx,@EmpId,'StockAdjust_Save',@Cnt,
+				'Stock Adjustment for Product : ''' + @ProductDesc +''' Created. Qty : '+ Cast(@AdjQty AS VARCHAR(7)), GETDATE());
+		Set @Cnt = @Cnt + 1;
+
+		Update PS set PS.[Status] = 0 from ProductStock PS, TmpTable T Where T.Idx = @PgIdx and T.EmpId = @EmpId and 
+		T.IData1 = PS.CustId and T.IData2 = PS.ProductId and T.IData3 = PS.SlNo;
+
+		Insert into DBLog (PgIdx, EmpId, ProcName, SlNo, LogData, CreatedOn) Values(@PgIdx,@EmpId,'StockAdjust_Save',@Cnt,
+				'Stock Adjusted for Product : ''' + @ProductDesc +'''. SlNos : '+ @SlNos, GETDATE());
+		Set @Cnt = @Cnt + 1;
+
+		Select @CurrentCount = Count(1) from ProductStock Where ProductId = @ProductId and Status = 1;
+		
+		Update Products Set Stock = @CurrentCount Where ProductId = @ProductId;
+
+		Insert into DBLog (PgIdx, EmpId, ProcName, SlNo, LogData, CreatedOn) Values(@PgIdx,@EmpId,'StockAdjust_Save',@Cnt,
+				'Stock Count Modified From ' + CAST(@ExistingCount AS VARCHAR(7)) +' To '+ CAST(@CurrentCount AS VARCHAR(7)), GETDATE());
+		
+		delete from TmpTable where Idx=@PgIdx and EmpId =@EmpId
+
+		Commit Transaction
+	End Try
+	Begin Catch
+		Rollback Transaction
+		if (len(@ErrorMsg) = 0)
+			set @ErrorMsg = ERROR_MESSAGE() + '\n Save Failed';
+		Select @ErrorMsg;
+	End Catch
+End
+
+
+ALTER Procedure [dbo].[Transporter_Grid](@Status int)
+As
+Begin
+	Select T.TransporterId, T.TransporterCode, T.TransporterDesc, T.ContactNo, T.[Status], COUNT(TV.TransporterId) as Vehicles 
+	from Transporters T LEFT JOIN TransporterVehicles TV On (T.TransporterId = TV.TransporterId and TV.[Status] = 1) 
+	Where T.[Status] = @Status Group By T.TransporterId,T.TransporterCode, T.TransporterDesc,T.ContactNo,T.[Status];
+End
+
+
+ALTER PROCEDURE [dbo].[TVehicle_Save](@PgIdx int,@TransporterId int,@VehicleNo Varchar(20), @Vehicletype Varchar(40), @Remarks Varchar(100), 
+@Status int, @EmpId bigint)
+As
+Begin
+--Define TmpTable --> IData1 => TransporterID, VData1 => VehicleNo, VData2 => VehicleType, VData3 => Remarks, Idata2 => [Status]
+--***************
+	declare @Cnt as int;
+
+	SELECT @Cnt = COUNT(1) FROM TmpTable WHERE Idx = @PgIdx and EmpId = @EmpID and IData1 = @TransporterId and VData1 = @VehicleNo;
+	
+	IF(@Cnt != 0)
+		Update TmpTable Set Vdata2 = @Vehicletype, Vdata3 = @Remarks, Idata2 = @Status Where Idx = @PgIdx and EmpId = @EmpId and 
+		VData1 = @VehicleNo;
+	ELSE
+		Insert into TmpTable(Idx,EmpId,IData1,VData1,VData2,VData3,Idata2) 
+		Values(@PgIdx, @EmpId, @TransporterId, @VehicleNo, @VehicleType,@Remarks,@Status);
+
+	Select IData1 as TransporterId, VData1 as VehicleNo,VData2 as VehicleType,VData3 as Remarks,Idata2 as [Status] 
+	From TmpTable Where Idx = @PgIdx and EmpId = @EmpId and IData2 = 1;
+End

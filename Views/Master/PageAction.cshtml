@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     <div class="select-option">
-                        <select class="form-control form-select" id="ddlEmp" onchange="LoadGrid()">
+                        <select class="form-control form-select" style="padding: 0.25rem 4.75rem;" id="ddlEmp" onchange="LoadGrid()">
                             <option value="0">Select</option>
                             @if (Model.ddlRole != null && Model.ddlRole.Count >= 1)
                             {
@@ -43,7 +43,7 @@
             </div>
 
             <div class="mb-4">
-                <table id="hdrtblGrid" class="table table-hover table-responsive" style="width:100%">
+                <table id="hdrtblGrid" class="table table-hover table-responsive">
                     <thead>
                         <tr class="page-action-th">
                             <th style="width: 2%;">#</th>
@@ -53,18 +53,20 @@
                             <th style="width: 10%;"> <label style="color: #0d2f64;"><input id="chbEdit" type="checkbox" value="1" name="edit" onclick="selectAll('edit')">Edit</label></th>
                             <th style="width: 12%;"> <label style="color: #0d2f64;"><input id="chbDelete" type="checkbox" value="1" name="delete" onclick="selectAll('delete')">Delete</label></th>
                             <th style="width: 10%;"> <label style="color: #0d2f64;"><input id="chbView" type="checkbox" value="1" name="view" onclick="selectAll('view')">View</label></th>
-                            <th style="width: 10%;"> <label style="color: #0d2f64;"><input id="chbUpload" type="checkbox" value="1" name="upload" onclick="selectAll('upload')">Upload</label></th>
+                            <th style="width: 15%;"> <label style="color: #0d2f64;"><input id="chbUpload" type="checkbox" value="1" name="upload" onclick="selectAll('upload')">Upload</label></th>
                         </tr>
                     </thead>
                 </table>
             </div>
             <div class="row w-100">
                 <div class="col-sm-12" style="justify-content: center;display:flex;">
-                    <div id="dvSaveBtn">
-                        <button type="button" onclick="fnSave()" class="btn btn-primary">Save</button>
+                    @if (ViewBag.PgAction[0] == '1')
+                    {
+                        <div id="dvSaveBtn">
+                            <button type="button" onclick="fnSave()" class="btn btn-primary">Save</button>
+                        </div>
+                    }
                     </div>
-                </div>
-
             </div>
         </div>
     </div>
@@ -91,7 +93,7 @@
             var rowClr = [];
             var dataset = new Array();
             var Emp = $('#ddlEmp').val();
-            document.getElementById("hdrtblGrid").style.display = Emp == "0" ? "none" : "block";
+            //document.getElementById("hdrtblGrid").style.display = Emp == "0" ? "none" : "block";
             $('#chbAdd, #chbEdit, #chbDelete, #chbView').prop('checked', false);
 
             $.ajax({

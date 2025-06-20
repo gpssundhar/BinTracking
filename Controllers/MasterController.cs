@@ -467,7 +467,7 @@ namespace BinTracking.Controllers
                 data.ProductCode = ipdata[0]; data.ProductDesc = ipdata[1];
 
                 Ret = objMas.ExecProcedure(1, "EXEC Product_Save " + Globals.MNU_MAS_PRODUCTS + "," + data.ProductId + ",'" + data.ProductCode + "','" +
-                    data.ProductDesc + "'," + data.Stock + "," + data.Status + ", " + Request.Cookies.Get(Globals.COOKIE_LGNEMPID).Value);
+                    data.ProductDesc + "'," + data.Status + ", " + Request.Cookies.Get(Globals.COOKIE_LGNEMPID).Value);
 
                 if (Ret == 0)
                     return ObjCom.JsonRspMsg(0, 0, MTHDNAME, 2, Globals.SERVER_ERROR + " " + objMas.DBErrBuf, null);
@@ -675,7 +675,7 @@ namespace BinTracking.Controllers
 
                 data.ReasonDesc = ipdata[0];
 
-                Ret = objMas.ExecProcedure(1, "EXEC Reason_Save " + Globals.MNU_MAS_REASON + ",'" + data.ReasonDesc + "'," + data.Status + ", " + 
+                Ret = objMas.ExecProcedure(1, "EXEC Reason_Save " + Globals.MNU_MAS_REASON + "," + data.ReasonId + ",'" + data.ReasonDesc + "'," + data.Status + ", " +
                             Request.Cookies.Get(Globals.COOKIE_LGNEMPID).Value);
 
                 if (Ret == 0)

@@ -6,7 +6,7 @@ using System.Web;
 public class Globals
 {
 
-    public const string APPVER = "V1.0.0 Realeased on 16.05.2025";
+    public const string APPVER = "1.0.0 Realeased on 09.06.2025";//Started -> 16.05.2025"
 
     public static string IMGPATH = "Upload";// Organization logo folder
 
@@ -14,7 +14,7 @@ public class Globals
 
     // Global Variables
     // App Admin UserId 
-    public static string SUPERADMIN_ID = "energy@nts.com";
+    public static string SUPERADMIN_ID = "admin@otaindia.com";
     public static string gsAppName = "Bin Tracking";
 
     // Cookie
@@ -61,10 +61,16 @@ public class Globals
     public const int DWNLDFMT_EXCEL = 0;
     public const int DWNLDFMT_PDF = 1;
 
-    public static int MNU_AUDIT_PAGE = 901;
 
-    //  ****    App Menus   ***
+    //Adjust type
+    public const int ADJTYPE_NORMAL = 1;
+    public const int ADJTYPE_CUSTOMER = 2;
+
+
+    public static int MNU_AUDIT_PAGE = 901;
     
+    //  ****    App Menus   ***
+
     // DashBoard --> (101-199)
     public static int MNU_DASHBOARD = 101;
 
@@ -79,7 +85,9 @@ public class Globals
 
     // Service --> 301 - 399
     public static int MNU_SRV_INVENTORY = 301;
-    public static int MNU_SRV_STOCKADJUST = 302;
+    public static int MNU_SRV_CUSTINVENTORY = 302;
+    public static int MNU_SRV_STOCKADJUST = 303;
+    public static int MNU_SRV_CUSTSTOCKADJUST = 304;
 
     // Report --> 401 - 499
     public static int MNU_RPT_STOCKADJUST = 401;

@@ -184,7 +184,7 @@ namespace BinTracking.Controllers
 
                 if (LgnUsr.CompareTo(Globals.SUPERADMIN_ID) == 0)
                 {
-                    buf = "select MenuType,MenuId from AppMenus where Status=1 and MenuType != 1 order by MenuType,MenuId";
+                    buf = "select MenuType,MenuId from AppMenus where Status=1 order by MenuType,MenuId";
                 }
                 else
                 {

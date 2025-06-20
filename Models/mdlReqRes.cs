@@ -89,6 +89,7 @@ namespace BinTracking.Models
         public string TransporterCode { get; set; }
         public string TransporterDesc { get; set; }
         public string ContactNo { get; set; }
+        public int Vehicles { get; set; }
         public int Status { get; set; }
     }
 
@@ -205,7 +206,7 @@ namespace BinTracking.Models
         public int Format { get; set; }
         public int PgIdx { get; set; }
     }
-    
+
 
     public class mdlStockAdjust_Grid
     {
@@ -243,5 +244,54 @@ namespace BinTracking.Models
     public class mdlInventorySLNo
     {
         public string Barcode { get; set; }
+    }
+
+
+    //**********************        SERVICE - Inventory     ***********************
+
+    public class mdlSrv_Inventory_Pg
+    {
+        public List<ddlValues> ddlProduct { get; set; }
+        public List<ddlValues> ddlCustomer { get; set; }
+        public List<ddlValues> ddlReason { get; set; }
+    }
+
+    public class mdlSrv_Inventory_Save
+    {
+        public long CustId { get; set; }
+        public int ProductId { get; set; }
+        public int Quantity { get; set; }
+        public string Remarks { get; set; }
+    }
+
+
+    //*******************************       Stock Adjustment        *********************
+
+    public class mdlSrv_StockAdj_Grid
+    {
+        public long CustId { get; set; }
+        public int ProductId { get; set; }
+        public int SlNo { get; set; }
+        public string Barcode { get; set; }
+    }
+
+
+    public class mdlSrv_StockAdj_Save
+    {
+        public int Mnu { get; set; }
+        public long CustId { get; set; }
+        public int ProductId { get; set; }
+        public int ReasonId { get; set; }
+        public string SlNos { get; set; }
+        public int AdjustQty { get; set; }
+        public int Stock { get; set; }
+
+        public List<BarcodeItem> SlNoList { get; set; }
+
+    }
+
+    public class BarcodeItem
+    {
+        public int SlNo { get; set; }
     }
 }

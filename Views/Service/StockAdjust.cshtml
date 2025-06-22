@@ -136,6 +136,9 @@
             var Customer = $('#ddlCustomer').val();
             var Product = $('#ddlProduct').val();
 
+            $('#txtAdjQty').val("");
+            $('#txtRemStock').val("");
+
             @*if (@ViewBag.Mnu == @Globals.MNU_SRV_CUSTINVENTORY && Customer == "0") {
                 toastr.error('Select Customer');
                 $("#ddlCustomer").focus();
@@ -211,7 +214,7 @@
             var Reason = $('#ddlReason').val();
             var SlNos = '';
 
-            if (@ViewBag.Mnu == @Globals.MNU_SRV_CUSTINVENTORY && Customer == "0") {
+            if (@ViewBag.Mnu == @Globals.MNU_SRV_CUSTSTOCKADJUST && Customer == "0") {
                 toastr.error('Select Customer');
                 $("#ddlCustomer").focus();
                 return;
@@ -241,6 +244,13 @@
                 if (!(selChb.SlNo == ''))
                     arrActionValues.push(selChb);
             });
+
+
+            if (AdjQty == "0" || AdjQty.length == 0) {
+                toastr.error('Adjust Quantity is Mandatory');
+                $("#txtAdjQty").focus();
+                return;
+            }
             if (SlNos.length != 0)
                 SlNos = SlNos.slice(0, -1);
             console.log(arrActionValues);

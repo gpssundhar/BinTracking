@@ -17,7 +17,7 @@ namespace BinTracking.Controllers
         HomeController ObjCom = new HomeController();
         readonly MasterLogic objMas = new MasterLogic();
         // GET: Report
-        public ActionResult RptStockAdjust(string ip=null)
+        public ActionResult RptStockAdjust(string ip = null)
         {
             string MTHDNAME = "RptStockAdjust";
             try
@@ -61,7 +61,7 @@ namespace BinTracking.Controllers
 
                 return dt = objMas.GetDataTable("EXEC Rpt_StockAdjust " + data.PgIdx + "," + data.CustId + ", '" + data.FromDate + "','" + data.ToDate + "'");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ObjCom.JsonRspException(MTHDNAME, ex.Message);
                 return null;
@@ -154,7 +154,7 @@ namespace BinTracking.Controllers
         }
 
 
-        public ActionResult RptInventory(string ip =null)
+        public ActionResult RptInventory(string ip = null)
         {
             string MTHDNAME = "RptInventory";
             try
@@ -244,7 +244,7 @@ namespace BinTracking.Controllers
 
                 int ret = 0;
                 string RptName = "";
-                string[] ExlCols = { "Customer", "Product", "Stock Qty", "Barcode" };
+                string[] ExlCols = { "Customer", "Product", "Stock Qty", "Serial Numbers" };
                 DataTable dt = new DataTable();
 
                 dt = Rpt_Inventory_GetQry(data);
@@ -301,12 +301,6 @@ namespace BinTracking.Controllers
             {
                 return ObjCom.JsonRspException(MTHDNAME, ex.Message);
             }
-        }
-
-
-        public ActionResult RptCustomerInventory()
-        {
-            return View();
         }
     }
 }

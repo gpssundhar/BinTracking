@@ -326,7 +326,6 @@
     <Content Include="Views\Service\StockAdjust.cshtml" />
     <Content Include="Views\Report\RptStockAdjust.cshtml" />
     <Content Include="Views\Report\RptInventory.cshtml" />
-    <Content Include="Views\Report\RptCustomerInventory.cshtml" />
     <Content Include="Views\Dashboard\Dashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>

@@ -154,7 +154,10 @@
                         },
                         "lengthMenu": [10, 30, 50, 70],
                         "pageLength": 10,
-
+                        'aoColumnDefs': [{
+                            'visible': (!(@ViewBag.PgAction[1] == '0' && @ViewBag.PgAction[2] == '0')),
+                            'targets': [5]
+                        }],
                         data: dataset,
                         columns: [{ title: "#", width: "1%" }, { title: "Code" }, { title: "Name" }, { title: "Contact" }, { title: "Vehicles" }, { title: "Action", width: "10%" }]
                     });
@@ -229,7 +232,7 @@
             $('#txtIpTName').val("");
             $('#txtIpContact').val("");
             $('#ddlStatus').val("1");
-            fnDeleteVehicle('0', '')
+            fnDeleteVehicle('0', '', '1')
             $('#mdlAddEdit').modal(modal == 1 ? "show" : "hide");
 
         }
@@ -308,7 +311,7 @@
                     "')\"><i class=\"las la-edit la-lg \" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a> " : "";*@
 
                 var _delete = @ViewBag.PgAction[2] == '1' ? " <a href =\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" " +
-                    "title=\"Delete\" onclick=\"fnDeleteVehicle(" + jsonData[i].TransporterId + ",'" + jsonData[i].VehicleNo + "')\" " +
+                    "title=\"Delete\" onclick=\"fnDeleteVehicle(" + jsonData[i].TransporterId + ",'" + jsonData[i].VehicleNo + "', '0')\" " +
                     "><i class=\"las la-trash-alt la-lg text-danger\" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a></div>" : "";
 
                 dataset.push([(i + 1), jsonData[i].VehicleType, jsonData[i].VehicleNo, jsonData[i].Remarks,
@@ -403,9 +406,9 @@
     }
 
 
-    function fnDeleteVehicle(Id, Name) {
+    function fnDeleteVehicle(Id, Name, IsAdd) {
         try {
-            if (Id != '0') {
+            if (IsAdd != '1') {
                 if (confirm("Do you want to delete this Vehicle : " + Name + " ?") != true)
                     return;
             }

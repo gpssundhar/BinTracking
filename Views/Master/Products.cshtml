@@ -130,7 +130,10 @@
                         },
                         "lengthMenu": [10, 30, 50, 70],
                         "pageLength": 10,
-
+                        'aoColumnDefs': [{
+                            'visible': (!(@ViewBag.PgAction[1] == '0' && @ViewBag.PgAction[2] == '0')),
+                            'targets': [4]
+                        }],
                         data: dataset,
                         columns: [{ title: "#", width: "1%" }, { title: "Code" }, { title: "Name" }, { title: "Stock" }, { title: "Action", width: "10%" }]
                     });

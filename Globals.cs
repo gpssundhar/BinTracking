@@ -54,7 +54,7 @@ public class Globals
     public const string CONTROLLER_SERVICE = "Service";
     
     public const string CNTRLMETHOD_LOGIN = "Index";
-    public const string CNTRLMETHOD_DASHBOARD = "DashBoard_Branch";
+    public const string CNTRLMETHOD_DASHBOARD = "DashBoard";
     public const string CNTRLMETHOD_COMMINGSOON = "CommingSoon";
 
     // Download Format

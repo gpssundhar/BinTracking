@@ -202,7 +202,7 @@
             var mid = Math.ceil(items.length / 2);
 
             items.forEach(function (item, index) {
-                var li = $('<li>').text(index + 1 + ". " + item.trim());
+                var li = $('<li>').text("• " + item.trim());
                 if (index < mid) {
                     $('#ulSlNoLeft').append(li);
                 } else {

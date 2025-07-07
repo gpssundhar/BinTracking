@@ -43,14 +43,15 @@
             <div class="modal-body">
                 <div class="row" style="display: flex;align-items: center;">
                     <div class="col-sm-6 searchformfld">
-                        <input type="hidden" id="hdnId" value="0">
-                        <input type="text" class="form-control EMS-inputfields" placeholder=" " id="txtIpShiftCode" maxlength="20" onkeypress="return MasterCode(event)" ondrop="return false">
-                        <label class="mb-0">Shift Code</label>
-                    </div>
-
-                    <div class="col-sm-6 searchformfld">
                         <input type="text" class="form-control EMS-inputfields" placeholder=" " id="txtIpShiftDesc" maxlength="50" onkeypress="return EmpName(event)" ondrop="return false">
                         <label class="mb-0">Shift</label>
+                    </div>
+                    <div class="col-sm-6 searchformfld">
+                        <label> Status</label>
+                        <select class="form-control form-select EMS-select" id="ddlStatus">
+                            <option value="1" selected>Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row">
@@ -60,11 +61,11 @@
                                 <h4>Timings</h4>
                                 <div class="from-to">
                                     <div class="from w-50">
-                                        <label for="">From</label>
+                                        <label for="">Start</label>
                                         <input type="time" name="From" class="form-control" id="FromTime">
                                     </div>
                                     <div class="to w-50">
-                                        <label for="">To</label>
+                                        <label for="">End</label>
                                         <input type="time" name="To" class="form-control" id="ToTime">
                                     </div>
                                 </div>
@@ -72,13 +73,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-6 searchformfld">
-                        <label> Status</label>
-                        <select class="form-control form-select EMS-select" id="ddlStatus">
-                            <option value="1" selected>Active</option>
-                            <option value="0">Inactive</option>
-                        </select>
-                    </div>
+                    
                 </div>
 
 
@@ -127,15 +122,15 @@
                     len = jsonData.length;
                     for (i = 0; i < len; i++) {
                         var _edit = @ViewBag.PgAction[1] == '1' ? "<a href=\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" data-toggle=\"modal\" " +
-                            "title=\"Edit\" style=\"margin-right:10px;\" onclick=\"fnEdit(" + jsonData[i].ShiftId + ", '" + jsonData[i].ShiftCode + "', '" +
-                            jsonData[i].ShiftDesc + "', '" + jsonData[i].FromTime + "', '" + jsonData[i].ToTime + "', '" + jsonData[i].Status +
+                            "title=\"Edit\" style=\"margin-right:10px;\" onclick=\"fnEdit(" + jsonData[i].ShiftId + ", '" +
+                            jsonData[i].ShiftDesc + "', '" + jsonData[i].StartTime + "', '" + jsonData[i].EndTime + "', '" + jsonData[i].Status +
                             "')\"><i class=\"las la-edit la-lg \" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a> " : "";
 
                         var _delete = (@ViewBag.PgAction[2] == '1' && Status == @Globals.STATUS_ACTIVE) ? " <a href =\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" " +
                             "title=\"Delete\" onclick=\"fnDelete(" + jsonData[i].ShiftId + ",'" + jsonData[i].ShiftDesc + "')\" " +
                             "><i class=\"las la-trash-alt la-lg text-danger\" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a></div>" : "";
 
-                        dataset.push([(i + 1), jsonData[i].ShiftCode, jsonData[i].ShiftDesc, jsonData[i].FromTime, jsonData[i].ToTime,
+                        dataset.push([(i + 1), jsonData[i].ShiftDesc, jsonData[i].StartTime, jsonData[i].EndTime,
                         "<div class=\"d-inline\">" + _edit + _delete + "</div>"]);
                     }
 
@@ -151,10 +146,10 @@
                         "pageLength": 10,
                         'aoColumnDefs': [{
                             'visible': (!(@ViewBag.PgAction[1] == '0' && @ViewBag.PgAction[2] == '0')),
-                            'targets': [5]
+                            'targets': [4]
                         }],
                         data: dataset,
-                        columns: [{ title: "#", width: "1%" }, { title: "Code" }, { title: "Name" }, { title: "From Time" },{ title: "To Time" }, { title: "Action", width: "10%" }]
+                        columns: [{ title: "#", width: "1%" }, { title: "Name" }, { title: "Start Time" },{ title: "End Time" }, { title: "Action", width: "10%" }]
                     });
                 }
             });
@@ -171,8 +166,8 @@
             var ShiftId = $('#hdnId').val();
             var Status = $('#ddlStatus').val();
 
-            var txtCtrl = ["txtIpShiftCode", "txtIpShiftDesc", "FromTime", "ToTime"];
-            var Msgs = ["Shift Code", "Shift Name", "From Time", "To Time"];
+            var txtCtrl = ["txtIpShiftDesc", "FromTime", "ToTime"];
+            var Msgs = ["Shift Name", "From Time", "To Time"];
 
             for (i = 0; i < txtCtrl.length; i++) {
                 var element = document.getElementById(txtCtrl[i]);
@@ -193,10 +188,9 @@
                 url: '@Url.Action("Shift_Save", "Master")',
                 data: JSON.stringify({
                     "ShiftId": ShiftId,
-                    "ShiftCode": datas[0],
-                    "ShiftDesc": datas[1],
-                    "FromTime": datas[2],
-                    "ToTime": datas[3],
+                    "ShiftDesc": datas[0],
+                    "FromTime": datas[1],
+                    "ToTime": datas[2],
                     "Status": Status
                 }),
                 contentType: "application/json; charset=utf-8",
@@ -222,7 +216,6 @@
     function fnClear(modal) {
         try {
             $('#hdnId').val("0");
-            $('#txtIpShiftCode').val("");
             $('#txtIpShiftDesc').val("");
             $('#FromTime').val("");
             $('#ToTime').val("");
@@ -238,7 +231,6 @@
     function fnEdit(Id, Code, Desc, FromTime, ToTime, Status) {
         try {
             $('#hdnId').val(Id);
-            $('#txtIpShiftCode').val(Code);
             $('#txtIpShiftDesc').val(Desc);
             $('#FromTime').val(FromTime);
             $('#ToTime').val(ToTime);

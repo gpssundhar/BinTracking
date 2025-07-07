@@ -117,17 +117,15 @@ namespace BinTracking.Models
     public class mdlShift_Grid
     {
         public int ShiftId { get; set; }
-        public string ShiftCode { get; set; }
         public string ShiftDesc { get; set; }
-        public string FromTime { get; set; }
-        public string ToTime { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
         public int Status { get; set; }
     }
 
     public class mdlShift_Save
     {
         public int ShiftId { get; set; }
-        public string ShiftCode { get; set; }
         public string ShiftDesc { get; set; }
         public string FromTime { get; set; }
         public string ToTime { get; set; }
@@ -140,6 +138,7 @@ namespace BinTracking.Models
         public string ProductDesc { get; set; }
         public string ProductCode { get; set; }
         public int Stock { get; set; }
+        public string Barcodes { get; set; }
         public int Status { get; set; }
 
     }

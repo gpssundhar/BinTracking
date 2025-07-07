@@ -76,7 +76,33 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade reason-modal" id="mdlBarcode" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Barcodes</h4>
+                <button type="button" class="close border-0" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="las la-lg la-times text-white"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled" style="font-size: 18px; color: black;" id="ulSlNoLeft">
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled" style="font-size: 18px; color: black;" id="ulSlNoRight">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     $(document).ready(function () {
@@ -107,6 +133,10 @@
 
                     len = jsonData.length;
                     for (i = 0; i < len; i++) {
+                        var _view = "<a href=\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" data-toggle=\"modal\" " +
+                            "title=\"Details\" style=\"margin-right:10px;\" onclick=\"fnShowSerial('" + jsonData[i].Barcodes +
+                            "')\"><i class=\"las la-eye la-lg \" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a> ";
+
                         var _edit = @ViewBag.PgAction[1] == '1' ? "<a href=\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" data-toggle=\"modal\" " +
                             "title=\"Edit\" style=\"margin-right:10px;\" onclick=\"fnEdit(" + jsonData[i].ProductId + ", '" + jsonData[i].ProductCode + "', '" +
                             jsonData[i].ProductDesc + "', '" + jsonData[i].Status +
@@ -117,7 +147,7 @@
                             "><i class=\"las la-trash-alt la-lg text-danger\" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a></div>" : "";
 
                         dataset.push([(i + 1), jsonData[i].ProductCode, jsonData[i].ProductDesc, jsonData[i].Stock,
-                        "<div class=\"d-inline\">" + _edit + _delete + "</div>"]);
+                        "<div class=\"d-inline\">" + _view + _edit + _delete + "</div>"]);
                     }
 
                     $('#tblGrid').DataTable({
@@ -258,6 +288,33 @@
         }
         catch (e) {
             alert("Error - 6 \n " + e.message);
+        }
+    }
+
+    function fnShowSerial(SLNo) {
+        try {
+            // Clear existing list items
+            $('#ulSlNoLeft').empty();
+            $('#ulSlNoRight').empty();
+
+            // Split the SLNo string into array
+            var items = SLNo.split(',');
+
+            // Loop and append items to lists (split into 2 columns)
+            var mid = Math.ceil(items.length / 2);
+
+            items.forEach(function (item, index) {
+                var li = $('<li>').text("• " + item.trim());
+                if (index < mid) {
+                    $('#ulSlNoLeft').append(li);
+                } else {
+                    $('#ulSlNoRight').append(li);
+                }
+            });
+            $('#mdlBarcode').modal("show");
+        }
+        catch (e) {
+            alert("Error - 7 \n " + e.message);
         }
     }
 </script>

@@ -1,0 +1,24 @@
+﻿--Default Data
+--************
+
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (1, 101, N'Dashboard', N'00010', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 201, N'Employees', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 202, N'Transporter', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 203, N'Shifts', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 204, N'Products', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 205, N'Customers', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 206, N'Reason', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 207, N'Page Action', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 301, N'Inventory', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 302, N'Customer Inventory', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 303, N'Stock Adjust', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 304, N'Customer Stock Adjust', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 401, N'Stock Adjust Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 402, N'Customer Stock Adjust Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 403, N'Inventory Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 404, N'Customer Inventory Report', N'10011', 1);
+
+
+Insert into Employees (EmpId,EmpCode,EmpName,Email,Mobile,AppPwd,SessionId,[Status],CreatedOn) 
+select CONCAT('8',FORMAT(GETDATE(),'yyMMdd'),FORMAT(COUNT(1),'000')),'OTA','OTAADMIN','admin@otaindia.com','','otaadmin','',8,getdate();
+

@@ -324,7 +324,7 @@ namespace BinTracking.Controllers
             string MTHDNAME = "Shift_Grid";
             try
             {
-                List<mdlShift_Grid> lstItem = objMas.GetDataList<mdlShift_Grid>("EXEC Shift_Grid " + Status);
+                List<mdlShift_Grid> lstItem = objMas.GetDataList<mdlShift_Grid>("EXEC Shift_Get " + Status);
                 if (lstItem == null)
                     return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 1, Globals.SERVER_ERROR, null);
 
@@ -346,29 +346,45 @@ namespace BinTracking.Controllers
             {
                 Int64 Ret = 0;
                 DataTable dt = new DataTable();
+                string buf = "";
 
                 if (ObjCom.ChkLgnSession(Request.Cookies) != 1)
                     return RedirectToAction(Globals.CNTRLMETHOD_LOGIN, Globals.CONTROLLER_LOGIN);
 
-                string[] ipdata = { data.ShiftCode, data.ShiftDesc, data.FromTime, data.ToTime };
-                if (objMas.Text_ChkInputs(new int[] { 0, 0, 0, 0 }, ref ipdata, new string[] { "Shift Code", "Shift Name", "From Time", "To Time" },
-                        new int[] { MasterLogic.TXTIP_ALPHA_NOS_SPL_ANY, MasterLogic.TXTIP_ALPHA_NOS_SPL_ANY, 0, 0}, 
-                        new int[] { 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0 },
-                        new int[] { 0, 0, 0, 0 }) != 1)
+                string[] ipdata = { data.ShiftDesc, data.FromTime, data.ToTime };
+                if (objMas.Text_ChkInputs(new int[] { 0, 0, 0 }, ref ipdata, new string[] { "Shift Name", "Start Time", "End Time" },
+                        new int[] { MasterLogic.TXTIP_ALPHA_NOS_SPL_ANY, 0, 0 },
+                        new int[] { 0, 0, 0 }, new int[] { 0, 0, 0 },
+                        new int[] { 0, 0, 0 }) != 1)
                     return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 7, objMas.DBErrBuf, null);
 
-                data.ShiftCode = ipdata[0]; data.ShiftDesc = ipdata[1]; data.FromTime = ipdata[2]; data.ToTime = ipdata[3];
+                data.ShiftDesc = ipdata[0]; data.FromTime = ipdata[1]; data.ToTime = ipdata[2];
 
-                Ret = objMas.ExecProcedure(1, "EXEC Shift_Save " + Globals.MNU_MAS_SHIFTS + "," + data.ShiftId + ",'" + data.ShiftCode + "','" +
-                    data.ShiftDesc + "','" + data.FromTime + "','" + data.ToTime + "'," + data.Status + ", " +
-                    Request.Cookies.Get(Globals.COOKIE_LGNEMPID).Value);
+                Ret = objMas.ExecProcedure(1, "EXEC Shift_Save " + Request.Cookies.Get(Globals.COOKIE_LGNEMPID).Value + "," + data.ShiftId + ",'" +
+                    data.ShiftDesc + "','" + data.FromTime + "','" + data.ToTime + "'," + data.Status);
+
+                buf = objMas.DBErrBuf;
+                Ret = buf[0] - '0';
+
+                //By subtracting '0' from buf[0], converting the character representation of a digit into its actual numeric value. For example:
+                //'1' - '0' results in 1(because in ASCII, the code for '1' is 49 and for '0' is 48, and 49 - 48 = 1).
+
+                //Proc Return --> 0 Error(0ErrMsg), 1 Prompt Option(1ErrMsg), 2 Save it(2Success ^ NewEmpId ^ OldEmpId ^)
+                string[] splData = buf.Substring(1).Split('^');
+                if (splData == null)
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 3, "Proc Response Split Failed", null);
 
                 if (Ret == 0)
-                    return ObjCom.JsonRspMsg(0, 0, MTHDNAME, 2, Globals.SERVER_ERROR + " " + objMas.DBErrBuf, null);
-                else if (Ret == 1 || objMas.DBErrBuf.Length != 0)
-                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 3, Globals.SAVE_FAILED + " " + objMas.DBErrBuf, "");
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 3, buf.Substring(1), "");
+                else if (Ret != 1)
+                    return ObjCom.JsonRspMsg(1, 2, MTHDNAME, 3, Globals.SAVE_FAILED, Globals.SAVE_FAILED);
+
+                //if (Ret == 0)
+                //    return ObjCom.JsonRspMsg(0, 0, MTHDNAME, 2, Globals.SERVER_ERROR + " " + objMas.DBErrBuf, null);
+                //else if (Ret == 1 || objMas.DBErrBuf.Length != 0)
+                //    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 3, Globals.SAVE_FAILED + " " + objMas.DBErrBuf, "");
                 else
-                    return ObjCom.JsonRspMsg(1, 1, MTHDNAME, 0, Globals.SAVE_SUCCESS, "");
+                    return ObjCom.JsonRspMsg(1, 1, MTHDNAME, 0, Globals.SAVE_SUCCESS, splData[0]);
             }
             catch (Exception Ex)
             {

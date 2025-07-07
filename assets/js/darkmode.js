@@ -1,8 +1,9 @@
 function darkmode() {
-    const wasDarkmode = localStorage.getItem('darkmode') === 'true';
-    localStorage.setItem('darkmode', !wasDarkmode);
     const element = document.body;
-    element.classList.toggle('dark-mode', !wasDarkmode);
+    const currentMode = element.classList.contains('dark-mode');
+    const newMode = !currentMode;
+    element.classList.toggle('dark-mode', newMode);
+    localStorage.setItem('darkmode', newMode);
 }
 
 function onload() {

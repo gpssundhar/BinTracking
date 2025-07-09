@@ -1,224 +1,163 @@
-﻿--Release - SOP	07-07-2025
+﻿--Release - SOP	09-07-2025
 --***********	**********
 
-DROP TABLE Shifts;
-CREATE TABLE [dbo].[SHIFTS](
-	[ShiftId] [int] NOT NULL,
-	[ShiftDesc] [varchar](10) NOT NULL,
-	[StartTime] [time](7) NOT NULL,
-	[EndTime] [time](7) NOT NULL,
-	[Status] [int] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[ShiftId] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
-UNIQUE NONCLUSTERED 
-(
-	[ShiftDesc] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
+Truncate Table AppMenus;
+Truncate Table MenuMapping;
 
-ALTER TABLE [dbo].[SHIFTS] ADD  DEFAULT ((0)) FOR [ShiftId]
-GO
-
-ALTER TABLE [dbo].[SHIFTS] ADD  DEFAULT ('') FOR [ShiftDesc]
-GO
-
-ALTER TABLE [dbo].[SHIFTS] ADD  DEFAULT ('00:00:00') FOR [StartTime]
-GO
-
-ALTER TABLE [dbo].[SHIFTS] ADD  DEFAULT ('00:00:00') FOR [EndTime]
-GO
-
-ALTER TABLE [dbo].[SHIFTS] ADD  DEFAULT ('1') FOR [Status]
-GO
-
-
-
-ALTER procedure [dbo].[Shift_Save](@LgnEmpId bigint, @ShiftId bigint, @ShiftDesc varchar(300), @StartTime varchar(8), @EndTime varchar(8),
-									@Status int, @ErrorMsg varchar(max) output)
-as
-begin
-begin try
-	declare @PROCNAME varchar(100) = concat('Shift_Save: ', @LgnEmpId);
-	declare @iCnt int = 0;
-	declare @iret  int = 0;
-	declare @Tmp varchar(max) = '';
-	declare @AMsg varchar(max) = '';
-
-	insert into DBLog (EmpId,ProcName,SlNo,LogData, CreatedOn) values (@LgnEmpId, @PROCNAME, 1, concat('Request: LgmEmp[', @LgnEmpId, '] Id[',
-					@ShiftId, '] Desc[', @ShiftDesc, '] StTime[', @StartTime, '] EndTm[', @EndTime, '] Status[', @Status, ']'), GETDATE());
-	set @ShiftDesc = TRIM(replace(replace(replace(@ShiftDesc,char(9),''),char(10),''),char(13),''));
-	
-	if (@LgnEmpId = null or @LgnEmpId = 0 or @ShiftDesc = null or @ShiftDesc = null or len(@ShiftDesc) = 0 or @StartTime = null or 
-							len(@StartTime) != 5 or @EndTime = null or LEN(@EndTime) != 5 or @Status = null)
-		begin
-			set @ErrorMsg = '0[1]: Input Valid Details';
-			RAISERROR (@ErrorMsg, 16, 1)
-		end
-
-	if @ShiftId = 0
-		select @iCnt = COUNT(1) from SHIFTS where ShiftDesc= @ShiftDesc;
-	else
-		begin
-			select @iCnt = COUNT(1) from SHIFTS where ShiftId = @ShiftId;
-			insert into DBLog (EmpId,ProcName,SlNo,LogData, CreatedOn) values (@LgnEmpId, @PROCNAME, 2, concat('Shift Id Avl Chk[', @iCnt, ']'),GETDATE());
-			if @iCnt != 1 
-				begin
-					set @ErrorMsg = '0[2]: Shift Details Not Found';
-					RAISERROR (@ErrorMsg, 16, 1)
-				end
-
-			select @iCnt = COUNT(1) from SHIFTS where ShiftId != @ShiftId and ShiftDesc= @ShiftDesc;
-		end
-
-	insert into DBLog (EmpId,ProcName,SlNo,LogData, CreatedOn) values (@LgnEmpId, @PROCNAME, 3, concat('Desc Avl Chk[', @iCnt, ']'),GETDATE());
-	if @iCnt != 0 
-		begin
-			set @ErrorMsg = '0[3]: Shift Description Already Available';
-			RAISERROR (@ErrorMsg, 16, 1)
-		end
-
-
-	create table #ShiftTmp (SeqNo int not null default 0, ShiftId int not null default 0, StartTime datetime not null default getDate(), EndTime 
-					datetime not null default getDate(), Status int not null default 0);
-	delete from #ShiftTmp;
-	insert into #ShiftTmp (ShiftId, StartTime, EndTime, Status) select ShiftId, CAST(CAST(GETDATE() AS DATE) AS DATETIME) + CAST(StartTime AS DATETIME),
-					CAST(CAST(GETDATE() AS DATE) AS DATETIME) + CAST(EndTime AS DATETIME), Status from SHIFTS;
-	if @ShiftId = 0
-		insert into #ShiftTmp (ShiftId, StartTime, EndTime, Status) values (99, CAST(CAST(GETDATE() AS DATE) AS DATETIME) + 
-					CAST(@StartTime AS DATETIME), CAST(CAST(GETDATE() AS DATE) AS DATETIME) + CAST(@EndTime AS DATETIME), @Status);
-	else
-		update #ShiftTmp set StartTime = CAST(CAST(GETDATE() AS DATE) AS DATETIME) + CAST(@StartTime AS DATETIME), 
-							EndTime = CAST(CAST(GETDATE() AS DATE) AS DATETIME) + CAST(@EndTime AS DATETIME),
-							Status = @Status where ShiftId = @ShiftId
-	delete from #ShiftTmp where Status = 0;
-	update #ShiftTmp set EndTime = DATEADD(day, 1, EndTime) where EndTime <= StartTime;
-
-	insert into #ShiftTmp (SeqNo, ShiftId, StartTime, EndTime, Status) select 1, ROW_NUMBER() over (order by StartTime,EndTime), 
-					StartTime, EndTime,Status from #ShiftTmp;
-	delete from #ShiftTmp where SeqNo != 1;
-
-	set @iCnt = 0;
-	select @iCnt = COUNT(1) from #ShiftTmp;
-	insert into DBLog (EmpId,ProcName,SlNo,LogData, CreatedOn) values (@LgnEmpId, @PROCNAME, 4, concat('Shift Tot rows[', @iCnt, ']'),GETDATE());
-	if @iCnt = null
-		begin
-			set @ErrorMsg = '0[4]: Save Failed';
-			RAISERROR (@ErrorMsg, 16, 1)
-		end
-	else
-		begin
-			select @iret = MIN(ChkVal) from (select IIF (StartTime >= EndTime, 0, 1) as ChkVal from #ShiftTmp) a
-			insert into DBLog (EmpId,ProcName,SlNo,LogData, CreatedOn) values (@LgnEmpId, @PROCNAME, 5, concat('Start < End Chk[', @iret, ']'),GETDATE());
-			if @iret = null or @iret != 1
-				begin
-					if @iCnt = null
-						set @ErrorMsg = '0[5]: Save Failed';
-					else
-						set @ErrorMsg = '0[6]: StartTime Must Be Higher Than EndTime';
-					RAISERROR (@ErrorMsg, 16, 1)
-				end
-
-			if @iCnt >= 2
-				begin
-					set @iret = 0;
-					select @iret = MIN(ChkVal) from (select iif(a.EndTime = dateadd(second,-1,b.StartTime),1,0) as ChkVal  from #ShiftTmp a, 
-									#ShiftTmp b where b.ShiftId - 1 = a.ShiftId) a;
-					insert into DBLog (EmpId,ProcName,SlNo,LogData, CreatedOn) values (@LgnEmpId, @PROCNAME, 6, concat('Time Continuity Chk[', @iret, ']'),GETDATE());
-					if @iret = null or @iret != 1
-						begin
-							if @iret = null
-								set @ErrorMsg = '0[7]: Save Failed';
-							else
-								set @ErrorMsg = '0[8]: Shift Timing Are Not In Order';
-							RAISERROR (@ErrorMsg, 16, 1)
-						end
-
-					select @iCnt = isnull(sum(DATEDIFF(second, StartTime, EndTime)),-1) from #ShiftTmp
-					insert into DBLog (EmpId,ProcName,SlNo,LogData, CreatedOn) values (@LgnEmpId, @PROCNAME, 7, concat('Tot Shift Sec [', @iCnt, '] Daysec[',
-									24 * 60 * 60, ']'), GETDATE());
-					if @iCnt = null or @iCnt = -1
-						begin
-							set @ErrorMsg = '0[9]: Save Failed';
-							RAISERROR (@ErrorMsg, 16, 1)
-						end
-					else if not(@iCnt <= (26 * 60 * 60))
-						begin
-							set @ErrorMsg = '0[10]: Shift Timings Must be Within 24 Hours';
-							RAISERROR (@ErrorMsg, 16, 1)
-						end
-				end
-		end
-
-	if @ShiftId = 0
-		begin
-			select @AMsg = COUNT(1) + 1 from SHIFTS;
-			insert into DBLog (EmpId,ProcName,SlNo,LogData, CreatedOn) values (@LgnEmpId, @PROCNAME, 8, concat('Id Gen [', @AMsg, ']'), GETDATE());
-			if @AMsg = null or LEN(@AMsg) = 0 or @AMsg = '0'
-				begin
-					set @ErrorMsg = '0[11]: Shift ID Generate Failed';
-					RAISERROR (@ErrorMsg, 16, 1)
-				end
-
-			insert into SHIFTS (ShiftId, ShiftDesc, StartTime, EndTime, Status) values (@AMsg, @ShiftDesc, @StartTime, @EndTime, @Status);
-			insert into DBLog(EmpId,ProcName,SlNo,LogData, CreatedOn) values (@LgnEmpId, @PROCNAME, 9, concat('Shift: ', @ShiftDesc, ' Added'), GETDATE());
-		end
-	else
-		begin
-			select @iCnt = Status, @AMsg = CONCAT(iif(ShiftDesc = @ShiftDesc, '', concat('Shift:''', ShiftDesc, ''' to ''', @ShiftDesc, '''')),
-								iif(StartTime = @StartTime,'', concat(', StartTime:''', StartTime, ''' to ''', @StartTime, '''')),
-								iif(EndTime = @EndTime,'', concat(', EndTime:''', EndTime, ''' to ''', @EndTime, '''')))
-								from SHIFTS where ShiftId = @ShiftId;
-
-			if ((@AMsg = null or LEN(@AMsg) = 0) and @iCnt = @Status)
-				begin
-					set @ErrorMsg = '1 Save Success';
-					return;
-				end
-
-			if (SUBSTRING(@AMsg, 1, 1) = ',')
-				set @AMsg = SUBSTRING(@AMsg, 2, LEN(@AMsg));
-
-			set @Tmp = '';
-			if (LEN(@AMsg) != 0)
-				set @Tmp = concat('Shift: ''', @ShiftDesc, ''' - Modified For ', @AMsg, IIF(@iCnt = @Status, '', iif(@Status=1,' and Activated',
-								' and Deleted')));
-			else
-				set @Tmp = concat('Shift: ''', @ShiftDesc, ''' - ', IIF(@iCnt = @Status, '', iif(@Status=1,' Activated', ' Deleted')));
-
-			update SHIFTS set ShiftDesc = @ShiftDesc, StartTime = @StartTime, EndTime = @EndTime, Status = @Status where ShiftId = @ShiftId;
-			insert into DBLog (EmpId, ProcName, SlNo, LogData, CreatedOn) values (@LgnEmpId, @PROCNAME, 10, @AMsg, GETDATE());
-		end
-
-	set @ErrorMsg = '1 Save Success';
-	drop table #ShiftTmp;
-end try
-begin catch
-Print(@ErrorMsg)
-	if (LEN(@ErrorMsg) = 0 or @ErrorMsg = 'OUTPUT')
-		set @ErrorMsg = concat('0[C]: Save Failed.',ERROR_MESSAGE());
-	drop table if exists #ShiftTmp;
-	insert into DBLog (EmpId,ProcName,SlNo,LogData, CreatedOn) values (@LgnEmpId, @PROCNAME, 99, @ErrorMsg,GETDATE());
-End catch
-end
-
-
-CREATE procedure [dbo].[Shift_Get](@Status int)
-AS
-BEGIN
-	SELECT  ShiftId, ShiftDesc, CONVERT(VARCHAR(8), CAST(StartTime AS TIME), 108) AS 'StartTime',
-			CONVERT(VARCHAR(8), CAST(EndTime AS TIME), 108) As 'EndTime', Status from SHIFTS where Status= @Status 
-			order by StartTime
-END
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (1, 101, N'Dashboard', N'00010', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 201, N'Employees', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 202, N'Transporter', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 203, N'Shifts', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 204, N'Products', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 205, N'Customers', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 206, N'Reason', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 207, N'Page Action', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 301, N'Inventory', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 302, N'Stock Adjust', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 303, N'Customer Stock Adjust', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 401, N'Stock Adjust Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 402, N'Customer Stock Adjust Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 403, N'Inventory Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 404, N'Customer Inventory Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 405, N'Stock Inward Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 406, N'CheckIn Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 407, N'CheckOut Report', N'10011', 1);
 
 
 ALTER Procedure [dbo].[Product_Grid](@Status int)
 As
 Begin
-	--Select ProductId, ProductCode, ProductDesc, Stock, [Status] from Products Where [Status] = @Status;
-	SELECT P.ProductId, P.ProductCode, P.ProductDesc, P.Stock, P.[Status], STRING_AGG(PS.Barcode, ',') AS Barcodes
-	FROM Products P LEFT JOIN ProductStock PS ON P.ProductId = PS.ProductId AND PS.[Status] = 1
-	WHERE P.[Status] = @Status GROUP BY P.ProductId, P.ProductCode, P.ProductDesc, P.Stock, P.[Status];
+	SELECT P.ProductId, P.ProductCode, P.ProductDesc, P.Stock, P.CustStock, P.Stock - P.CustStock as StockInHand, P.[Status],
+	STRING_AGG(Concat(PS.SlNo,' | ',PS.Barcode), ',') AS Barcodes FROM Products P LEFT JOIN ProductStock PS ON P.ProductId = PS.ProductId AND 
+	PS.[Status] = 1 and PS.CustId = 0 WHERE P.[Status] = @Status GROUP BY P.ProductId, P.ProductCode, P.ProductDesc, P.Stock,P.CustStock, P.[Status];
+End
+
+
+ALTER PROCEDURE [dbo].[StockAdjust_Save](@PgIdx int, @EmpId bigint, @CustId bigint, @ProductId int, @AdjType int, 
+@AdjQty int, @Stock int, @SlNos Varchar(max), @ReasonId int, @ErrorMsg Varchar(1500) OUTPUT)
+As
+Begin
+declare @Cnt as int;
+declare @pCnt as int;
+declare @StockAdjID as int;
+Declare @ProductDesc as Varchar(100) = '';
+DECLARE @CurrentCount INT;
+DECLARE @CurrentCustCount INT;
+DECLARE @ExistingCount INT;
+	Begin Try
+		Begin Transaction
+		SELECT @Cnt = CASE WHEN EXISTS (SELECT 1 FROM DBLog WHERE PgIdx = @PgIdx) THEN (SELECT MAX(SlNo) + 1 FROM DBLog WHERE PgIdx = @PgIdx)
+		ELSE 1 END;
+
+		select @ExistingCount = Stock,@ProductDesc = ProductDesc From Products Where ProductId = @ProductId;
+
+		Select @StockAdjID = ISNULL(Max(StkAdjId),0)+1 from StockAdjust;
+		
+		Select @pCnt = COUNT(1) from TmpTable T, ProductStock PS Where T.Idx = @PgIdx and T.EmpId = @EmpId and 
+		T.IData2 = PS.ProductId and T.IData3 = PS.SlNo and T.IData1 != PS.CustId;
+
+		IF(@pCnt != 0)
+			BEGIN
+				Set @ErrorMsg = 'One or more of the selected barcodes have already been checked out.';
+				RAISERROR (@ErrorMsg, 16, 1)
+			END
+		
+		Insert into StockAdjust(StkAdjId,EmpId,CustId,ProductId,StkAdjType,AdjustQty,Stock,SlNos,ReasonId,[Status],CreatedOn) 
+		Values(@StockAdjID,@EmpId,@CustId,@ProductId,@AdjType,@AdjQty,@Stock,@SlNos,@ReasonId,1,GETDATE());
+
+		Insert into DBLog (PgIdx, EmpId, ProcName, SlNo, LogData, CreatedOn) Values(@PgIdx,@EmpId,'StockAdjust_Save',@Cnt,
+				'Stock Adjustment for Product : ''' + @ProductDesc +''' Created. Qty : '+ Cast(@AdjQty AS VARCHAR(7)), GETDATE());
+		Set @Cnt = @Cnt + 1;
+
+		Update PS set PS.[Status] = 0 from ProductStock PS, TmpTable T Where T.Idx = @PgIdx and T.EmpId = @EmpId and 
+		T.IData1 = PS.CustId and T.IData2 = PS.ProductId and T.IData3 = PS.SlNo;
+
+		Insert into DBLog (PgIdx, EmpId, ProcName, SlNo, LogData, CreatedOn) Values(@PgIdx,@EmpId,'StockAdjust_Save',@Cnt,
+				'Stock Adjusted for Product : ''' + @ProductDesc +'''. SlNos : '+ @SlNos, GETDATE());
+		Set @Cnt = @Cnt + 1;
+
+		Select @CurrentCount = Count(1) from ProductStock Where ProductId = @ProductId and Status = 1;
+
+		IF(@CustId != 0)
+		BEGIN
+			Select @CurrentCustCount = Count(1) from ProductStock Where ProductId = @ProductId and CustId = @CustId and Status = 1;
+
+			Update Products Set CustStock = @CurrentCustCount Where ProductId = @ProductId;
+		END
+
+		Update Products Set Stock = @CurrentCount Where ProductId = @ProductId;
+
+		Insert into DBLog (PgIdx, EmpId, ProcName, SlNo, LogData, CreatedOn) Values(@PgIdx,@EmpId,'StockAdjust_Save',@Cnt,
+				'Stock Count Modified From ' + CAST(@ExistingCount AS VARCHAR(7)) +' To '+ CAST(@CurrentCount AS VARCHAR(7)), GETDATE());
+		
+		delete from TmpTable where Idx=@PgIdx and EmpId =@EmpId
+
+		Commit Transaction
+	End Try
+	Begin Catch
+		Rollback Transaction
+		if (len(@ErrorMsg) = 0)
+			set @ErrorMsg = ERROR_MESSAGE() + '\n Save Failed';
+		Select @ErrorMsg;
+	End Catch
+End
+
+ALTER PROCEDURE [dbo].[Rpt_Inventory](@PgIdx Varchar(5), @CustId Varchar(15))
+As
+BEGIN
+	Declare @Where as Varchar(100) = '';
+	Declare @Qry as nVarchar(max) = '';
+
+	IF(@PgIdx = 403 or (@PgIdx = 404 and @CustId != '0'))
+		Set @Where = ' and PS.CustId = '+ @CustId;
+	ELSE IF(@PgIdx = 404)
+		Set @Where = ' and PS.CustId != 0';
+
+  Set @Qry = 'Select C.CustDesc, P.ProductDesc, Count(PS.SlNo) as BarcodeQty, PS.ProductId, STRING_AGG(Concat(PS.SlNo,'' | '',PS.Barcode), '','') as Barcode
+	From Products P, ProductStock PS LEFt JOIN Customers C On(PS.CustId = C.CustId) 
+  Where PS.ProductId = P.ProductId and PS.Status = 1 '+ @Where +' Group By C.CustDesc, PS.ProductId, P.ProductDesc';
+
+  Print(@Qry);
+  EXEC (@Qry);
+END
+
+CREATE PROCEDURE [dbo].[Rpt_StockInward](@FromDate Varchar(10), @ToDate Varchar(10),@ProductId Varchar(15))
+As
+Begin
+Declare @Qry as nVarchar(max) = '';
+
+Set @Qry = 'Select Convert(varchar(10),SI.SDate,121) as SDate, P.ProductDesc, SI.Quantity, SI.FromSlNo, SI.ToSlNo, E.EmpName, SI.Remarks 
+			from StockInward SI, Products P, Employees E 
+			Where SI.ProductId = P.ProductId and SI.EmpId = E.EmpId and SI.Status = 1 and 
+			Convert(varchar(10),SI.SDate,121) >= '''+ @FromDate +''' and Convert(varchar(10),SI.SDate,121) <= '''+ @ToDate +''' '
+
+IF(@ProductId != '0')
+	Set @Qry = @Qry + ' and SI.ProductId = ' +@ProductId
+
+Set @Qry = @Qry + ' Order by SI.SDate,P.ProductDesc, SI.FromSlNo';
+
+Print(@Qry);
+EXEC (@Qry);
+End
+
+CREATE PROCEDURE [dbo].[Rpt_Check_InOut](@FromDate Varchar(10), @ToDate Varchar(10),@ProductId Varchar(15),@TranType int)
+As
+Begin
+Declare @Qry as nVarchar(max) = '';
+
+Set @Qry = 'Select TH.TranDate,T.TransporterDesc,TH.VehicleNo, C.CustDesc, P.ProductDesc, COUNT(Barcode) as Quantity, E.EmpName, 
+			STRING_AGG(CONCAT(TL.SlNo,'' | '', TL.Barcode),'','') as SlNos 
+			From TranHeader TH, TranLines TL, Customers C, Products P,Transporters T, Employees E 
+			Where TH.TranId = TL.TranId and TL.CustId = C.CustId and TL.ProductId = P.ProductId and TH.EmpId = E.EmpId and 
+			TH.Status = 1 and TL.Status = 1 and Convert(varchar(10),TH.TranDate,121) >= '''+ @FromDate +''' 
+			and Convert(varchar(10),TH.TranDate,121) <= '''+ @ToDate +''' and TH.TranType = ' + @TranType;
+
+IF(@ProductId != '0')
+	Set @Qry = @Qry + ' and TL.ProductId = ' +@ProductId
+
+Set @Qry = @Qry + ' Group By TH.TranDate,C.CustDesc,P.ProductDesc,T.TransporterDesc,TH.VehicleNo,E.EmpName 
+					Order By TH.TranDate,C.CustDesc,P.ProductDesc';
+
+Print(@Qry);
+EXEC (@Qry);
 End

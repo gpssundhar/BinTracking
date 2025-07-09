@@ -26,6 +26,7 @@ public class Globals
     public const string COOKIE_LGNEROLE = "Role";
     public const string COOKIE_LGNSESSION = "SessionId";
     public const string COOKIE_DEFAULTSESSION = "DEF_SessionId";
+    public const string COOKIE_EMPSTATUS = "Emp Status";
 
     //Display Messages
     public const string SERVER_ERROR = "Server Error.\n Contact System Admin";
@@ -85,14 +86,17 @@ public class Globals
 
     // Service --> 301 - 399
     public static int MNU_SRV_INVENTORY = 301;
-    public static int MNU_SRV_CUSTINVENTORY = 302;
-    public static int MNU_SRV_STOCKADJUST = 303;
-    public static int MNU_SRV_CUSTSTOCKADJUST = 304;
+    //public static int MNU_SRV_CUSTINVENTORY = 302;
+    public static int MNU_SRV_STOCKADJUST = 302;
+    public static int MNU_SRV_CUSTSTOCKADJUST = 303;
 
     // Report --> 401 - 499
     public static int MNU_RPT_STOCKADJUST = 401;
     public static int MNU_RPT_CUSTSTOCKADJUST = 402;
     public static int MNU_RPT_INVENTORY = 403;
     public static int MNU_RPT_CUSTOMERINVENTORY = 404;
+    public static int MNU_RPT_STOCKINWARD = 405;
+    public static int MNU_RPT_CHECKIN = 406;
+    public static int MNU_RPT_CHECKOUT = 407;
 
 }

@@ -138,6 +138,8 @@ namespace BinTracking.Models
         public string ProductDesc { get; set; }
         public string ProductCode { get; set; }
         public int Stock { get; set; }
+        public int CustStock { get; set; }
+        public int StockInHand { get; set; }
         public string Barcodes { get; set; }
         public int Status { get; set; }
 
@@ -245,6 +247,56 @@ namespace BinTracking.Models
         public string Barcode { get; set; }
     }
 
+
+    public class mdlRptStockInward_Pg
+    {
+        public List<ddlValues> ddlProduct { get; set; }
+    }
+
+    public class mdlRpt_StockInward_Rpt
+    {
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public long ProductId { get; set; }
+        public int Format { get; set; }
+    }
+    public class mdlRptStockInward_Grid
+    {
+        public string SDate { get; set; }
+        public string ProductDesc { get; set; }
+        public int Quantity { get; set; }
+        public int FromSlNo { get; set; }
+        public int ToSlNo { get; set; }
+        public string EmpName { get; set; }
+        public string Remarks { get; set; }
+    }
+
+
+    public class mdlRptCheck_InOut_Pg
+    {
+        public List<ddlValues> ddlProduct { get; set; }
+    }
+
+    public class mdlRpt_CheckInOut_Rpt
+    {
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public long ProductId { get; set; }
+        public int Format { get; set; }
+        public int PgIdx { get; set; }
+    }
+
+    public class mdlRptCheckInOut_Grid
+    {
+        public string TranDate { get; set; }
+        public string TransporterDesc { get; set; }
+        public string VehicleNo { get; set; }
+        public string CustDesc { get; set; }
+        public string ProductDesc { get; set; }
+        public int Quantity { get; set; }
+        public string EmpName { get; set; }
+        public string SlNos { get; set; }
+    }
 
     //**********************        SERVICE - Inventory     ***********************
 

@@ -1,24 +1,34 @@
-﻿@model BinTracking.Models.mdlRptInventory_Pg
+﻿@model BinTracking.Models.mdlRptStockInward_Pg
 @{
-    ViewBag.Title = "RptInventory";
+    ViewBag.Title = "RptStockInward";
 }
 <!-- Main Body Starts -->
 <div class="p-4 mt-4">
     <div class="mb-2">
         <div class="widget-content widget-content-area br-6 date-table-container">
             <div class="filter-section mb-4">
-                <h4 id="lblHeader" class="table-header" style="color: var(--primary-color);">Inventory Report</h4>
+                <h4 class="table-header" style="color: var(--primary-color);">Stock Inward Report</h4>
             </div>
 
             <div class="report-filters mb-5">
                 <div class="row mt-3 mb-4" style="display: flex;align-items: center;">
+                    <div class="col-sm-4 searchformfld">
+                        <label>From</label>
+                        <input type="date" class="form-control" placeholder=" " id="dtFromDate">
+                    </div>
+
+                    <div class="col-sm-4 searchformfld">
+                        <label>To</label>
+                        <input type="date" class="form-control" placeholder=" " id="dtToDate">
+                    </div>
+
                     <div id="dvCustomer" class="col-sm-4 searchformfld">
-                        <label>Customer</label>
-                        <select class="form-control form-select EMS-select" id="ddlCustomer">
+                        <label>Products</label>
+                        <select class="form-control form-select EMS-select" id="ddlProduct">
                             <option value="0">All</option>
-                            @if (Model.ddlCustomer != null && Model.ddlCustomer.Count >= 1)
+                            @if (Model.ddlProduct != null && Model.ddlProduct.Count >= 1)
                             {
-                                foreach (var item in Model.ddlCustomer)
+                                foreach (var item in Model.ddlProduct)
                                 {
                                     <option value="@item.ddlId">@item.ddlDesc</option>
                                 }
@@ -40,6 +50,14 @@
                     <div class="col-sm-3"></div>
 
                     <div class="col-sm-6 reports-btns">
+                        <button class="btn btn-primary" onclick="LoadGrid()">
+                            <span>Show</span>
+                            <i class="las la-save la-lg"></i>
+                        </button>
+                        <button class="btn btn-danger" onclick="fnClear()">
+                            <span>Clear</span>
+                            <i class="las la-eraser la-lg"></i>
+                        </button>
                         <button class="btn btn-primary" onclick="fnDownload()">
                             <span>Download</span>
                             <i class="las la-file-download la-lg"></i>
@@ -57,57 +75,40 @@
         </div>
     </div>
 </div>
-<!-- Main Body Ends -->
-<div class="modal fade reason-modal" id="mdlAddEdit" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Serial Numbers</h4>
-                <button type="button" class="close border-0" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="las la-lg la-times text-white"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <ul class="list-unstyled" style="font-size: 18px; color: black;" id="ulSlNoLeft">
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <ul class="list-unstyled" style="font-size: 18px; color: black;" id="ulSlNoRight">
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer" style="justify-content: space-between;">
-                <small style="color: #3b3f5c;">Info: SlNo | Barcode</small>
-                <button class="btn btn-danger" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
     $(document).ready(function () {
-        document.getElementById("dvCustomer").style.display = "@ViewBag.dvCust";
-        $("#lblHeader").text("@ViewBag.lblHeader");
-        LoadGrid();
+        fnClear();
     });
+
+    function fnClear() {
+        try {
+            $('#tblGrid').hide(true);
+            $('#dtFromDate').val(new Date().toISOString().substring(0, 10));
+            $('#dtToDate').val(new Date().toISOString().substring(0, 10));
+        }
+        catch (e) {
+            toastr.error("Error - 1 ::: " + e.message);
+        }
+    }
 
     function LoadGrid() {
         try {
             let dataset = [];
+            var FromDate = $('#dtFromDate').val() == null ? "" : $('#dtFromDate').val();
+            var ToDate = $('#dtToDate').val() == null ? "" : $('#dtToDate').val();
             var Format = $('#ddlDwnFmt').val();
-            var Customer = $('#ddlCustomer').val();
+            var Product = $('#ddlProduct').val();
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("RptInventory_Grid", "Report")',
+                url: '@Url.Action("RptStockInward_Grid", "Report")',
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: JSON.stringify({
-                    "CustId": Customer,
+                    "FromDate": FromDate,
+                    "ToDate": ToDate,
+                    "ProductId": Product,
                     "Format": Format,
-                    "PgIdx": @ViewBag.Mnu,
                 }),
                 success: function (jsonData) {
                     $('#tblGrid').show();
@@ -119,12 +120,12 @@
 
                     len = jsonData.length;
                     for (i = 0; i < len; i++) {
-                        var _edit = "<a href=\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" data-toggle=\"modal\" " +
-                            "title=\"Details\" style=\"margin-right:10px;\" onclick=\"fnShowSerial('" + jsonData[i].Barcode +
-                            "')\"><i class=\"las la-eye la-lg \" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a> ";
+                        //var _edit = "<a href=\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" data-toggle=\"modal\" " +
+                        //    "title=\"Details\" style=\"margin-right:10px;\" onclick=\"fnShowSerial('" + jsonData[i].SlNos +
+                        //    "')\"><i class=\"las la-eye la-lg \" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a> ";
 
-                        dataset.push([(i + 1), jsonData[i].CustDesc,jsonData[i].ProductDesc, jsonData[i].BarcodeQty,
-                        "<div class=\"d-inline\">" + _edit + "</div>"]);
+                        dataset.push([(i + 1), jsonData[i].SDate, jsonData[i].ProductDesc, jsonData[i].Quantity, jsonData[i].FromSlNo,
+                            jsonData[i].ToSlNo, jsonData[i].EmpName, jsonData[i].Remarks,"<div class=\"d-inline\"></div>"]);
                     }
 
                     $('#tblGrid').DataTable({
@@ -137,13 +138,10 @@
                         },
                         "lengthMenu": [10, 30, 50, 70],
                         "pageLength": 10,
-                        'aoColumnDefs': [{
-                            'visible': (@ViewBag.grdCust),
-                            'targets': [1]
-                        }],
 
                         data: dataset,
-                        columns: [{ title: "#", width: "1%" }, { title: "Customer" }, { title: "Product" }, { title: "Stock Qty" },{ title: "Serial Number", width: "10%" }]
+                        columns: [{ title: "#", width: "1%" }, { title: "Date" }, { title: "Product" }, { title: "Quantity" }, { title: "From SL No" }, { title: "To SL No" },
+                            { title: "Employee" }, { title: "Remarks" }]
                     });
 
                 }
@@ -155,48 +153,24 @@
     }
 
 
-    function fnShowSerial(SLNo) {
-        try {
-            // Clear existing list items
-            $('#ulSlNoLeft').empty();
-            $('#ulSlNoRight').empty();
-
-            // Split the SLNo string into array
-            var items = SLNo.split(',');
-
-            // Loop and append items to lists (split into 2 columns)
-            var mid = Math.ceil(items.length / 2);
-
-            items.forEach(function (item, index) {
-                var li = $('<li>').text("• " + item.trim());
-                if (index < mid) {
-                    $('#ulSlNoLeft').append(li);
-                } else {
-                    $('#ulSlNoRight').append(li);
-                }
-            });
-            $('#mdlAddEdit').modal("show");
-        }
-        catch (e) {
-            alert("Error - 3 \n " + e.message);
-        }
-    }
-
     function fnDownload() {
         try {
             //ShowProgress(1);
+            var FromDate = $('#dtFromDate').val() == null ? "" : $('#dtFromDate').val();
+            var ToDate = $('#dtToDate').val() == null ? "" : $('#dtToDate').val();
+            var Product = $('#ddlProduct').val();
             var Format = $('#ddlDwnFmt').val();
-            var Customer = $('#ddlCustomer').val();
 
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("RptInventory_Dwnld", "Report")',
+                url: '@Url.Action("RptStockInward_Dwnld", "Report")',
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: JSON.stringify({
+                    "FromDate": FromDate,
+                    "ToDate": ToDate,
                     "Format": Format,
-                    "CustId": Customer,
-                    "PgIdx": @ViewBag.Mnu,
+                    "ProductId": Product,
                 }),
                 success: function (jsonData) {
                     if (jsonData.Success == 0)

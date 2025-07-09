@@ -109,7 +109,7 @@ namespace BinTracking.Controllers
                 ret = status = 0;
 
                 dt = objMas.GetDataTable("Select EmpId, EmpName, Email, [Status] from Employees Where (Email = '" +
-                    data.UserId + "' or Mobile = '" + data.UserId + "') and AppPwd = '" + data.UserPwd + "' ");
+                    data.UserId + "' or Mobile = '" + data.UserId + "' or EmpCode = '" + data.UserId + "') and AppPwd = '" + data.UserPwd + "' ");
                 if (dt == null)
                     return JsonRspMsg(1, 0, MTHDNAME, 1, Globals.FETCH_FAILED, null);
                 else if (dt.Rows.Count == 0)
@@ -137,6 +137,7 @@ namespace BinTracking.Controllers
                 Response.Cookies.Add(new HttpCookie(Globals.COOKIE_LGNEMPDESC, dt.Rows[0]["EmpName"].ToString()));
                 Response.Cookies.Add(new HttpCookie(Globals.COOKIE_LGNEMAIL, dt.Rows[0]["Email"].ToString()));
                 Response.Cookies.Add(new HttpCookie(Globals.COOKIE_LGNUSERID, data.UserId));
+                Response.Cookies.Add(new HttpCookie(Globals.COOKIE_EMPSTATUS, dt.Rows[0]["Status"].ToString()));
                 return JsonRspMsg(1, 1, MTHDNAME, 1, Globals.LOGIN_SUCCESS, null);
             }
             catch (Exception Ex)
@@ -155,11 +156,11 @@ namespace BinTracking.Controllers
             string PAGEDESC = "LoadMenus";
             try
             {
-                string LgnUsr, EmpId, buf;
+                string LgnUsrStatus, EmpId, buf;
                 DataTable dt = new DataTable();
                 List<Menus> AppMnus = new List<Menus>();
 
-                LgnUsr = EmpId = buf = "";
+                LgnUsrStatus = EmpId = buf = "";
 
 
                 if (Request.Cookies.Get(Globals.COOKIE_LGNSESSION) == null || Request.Cookies.Get(Globals.COOKIE_LGNSESSION).Value.Length == 0 ||
@@ -170,19 +171,19 @@ namespace BinTracking.Controllers
                 if (ChkLgnSession(Request.Cookies) != 1)
                     return RedirectToAction(Globals.CNTRLMETHOD_LOGIN, Globals.CONTROLLER_LOGIN);
 
-                LgnUsr = Request.Cookies.Get(Globals.COOKIE_LGNUSERID).Value;
+                LgnUsrStatus = Request.Cookies.Get(Globals.COOKIE_EMPSTATUS).Value;
                 EmpId = Request.Cookies.Get(Globals.COOKIE_LGNEMPID).Value;
 
                 if (EmpId.Length == 0 || EmpId == "0")
                     return RedirectToAction("Index", Globals.CONTROLLER_LOGIN);
 
-                if (EmpId.Length == 0 || LgnUsr.Length == 0)
+                if (EmpId.Length == 0)
                 {
                     objMas.PrintLog(PAGEDESC, "[2] Menu Mapping Fetch Failed");
                     return RedirectToAction("Index", Globals.CONTROLLER_LOGIN);
                 }
 
-                if (LgnUsr.CompareTo(Globals.SUPERADMIN_ID) == 0)
+                if (LgnUsrStatus == Globals.STATUS_SUPERADMIN.ToString())
                 {
                     buf = "select MenuType,MenuId from AppMenus where Status=1 order by MenuType,MenuId";
                 }
@@ -246,17 +247,17 @@ namespace BinTracking.Controllers
             DBErrBuf = "";
             try
             {
-                string buf, tmp, EmpId, UserId;
+                string buf, tmp, EmpId, LgnUsrStatus;
                 int ret = 0;
-                buf = tmp = EmpId = UserId = "";
+                buf = tmp = EmpId = LgnUsrStatus = "";
 
                 EmpId = hccLgn.Get(Globals.COOKIE_LGNEMPID).Value;
-                UserId = hccLgn.Get(Globals.COOKIE_LGNUSERID).Value;
+                LgnUsrStatus = hccLgn.Get(Globals.COOKIE_EMPSTATUS).Value;
 
-                if (EmpId.Length == 0 || UserId.Length == 0)
+                if (EmpId.Length == 0)
                     return "0000";
 
-                if (UserId.ToUpper() == Globals.SUPERADMIN_ID.ToUpper())
+                if (LgnUsrStatus == Globals.STATUS_SUPERADMIN.ToString())
                     buf = "select PgAction from AppMenus where MenuId=" + MenuId;
                 else
                     buf = "select PgAction from MenuMapping mm,Employees em where mm.MenuId=" + MenuId + " and mm.EmpId=em.EmpId and mm.EmpId = " + EmpId;

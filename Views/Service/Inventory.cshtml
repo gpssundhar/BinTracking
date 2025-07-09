@@ -84,11 +84,6 @@
             var txtCtrl = ["ddlProduct", "txtQuantity", "txtRemarks"];
             var Msgs = ["Product", "Quantity", ""];
 
-            if (@ViewBag.Mnu == @Globals.MNU_SRV_CUSTINVENTORY && Customer == "0") {
-                toastr.error('Select Customer');
-                $("#ddlCustomer").focus();
-                return;
-            }
             for (i = 0; i < txtCtrl.length; i++) {
                 var element = document.getElementById(txtCtrl[i]);
                 if (element) {

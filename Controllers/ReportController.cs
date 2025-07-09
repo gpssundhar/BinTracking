@@ -280,9 +280,55 @@ namespace BinTracking.Controllers
         }
 
 
-        public ActionResult RptInventory_GetSerial(int ProductId)
+        #region Report - Inward
+        public ActionResult RptStockInward()
         {
-            string MTHDNAME = "RptInventory_Grid";
+            string MTHDNAME = "RptStockInward";
+            try
+            {
+                mdlRptStockInward_Pg model = new mdlRptStockInward_Pg();
+                if (ObjCom.ChkLgnSession(Request.Cookies) != 1)
+                    return RedirectToAction(Globals.CNTRLMETHOD_LOGIN, Globals.CONTROLLER_LOGIN);
+
+                ViewBag.PgAction = ObjCom.GetPageAction(Globals.MNU_RPT_STOCKINWARD, Request.Cookies);
+                if (ViewBag.PgAction[3] != '1')
+                    return RedirectToAction(Globals.CNTRLMETHOD_DASHBOARD, Globals.CONTROLLER_DASHBOARD);
+
+                model.ddlProduct = objMas.GetDataList<ddlValues>("Select ProductId As ddlId,ProductDesc As ddlDesc From Products Where Status=1 order by ProductDesc");
+                if (model.ddlProduct == null)
+                {
+                    objMas.PrintLog(MTHDNAME, objMas.DBErrBuf);
+                    ViewBag.ErrorMsg = Globals.SERVER_ERROR;
+                }
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                return ObjCom.JsonRspException(MTHDNAME, ex.Message);
+            }
+        }
+
+
+        private DataTable Rpt_StockInward_GetQry(mdlRpt_StockInward_Rpt data)
+        {
+            string MTHDNAME = "Rpt_StockInward_GetQry";
+            try
+            {
+                DataTable dt = new DataTable();
+
+                return dt = objMas.GetDataTable("EXEC Rpt_StockInward '" + data.FromDate + "','" + data.ToDate + "', " + data.ProductId);
+            }
+            catch (Exception ex)
+            {
+                ObjCom.JsonRspException(MTHDNAME, ex.Message);
+                return null;
+            }
+        }
+
+
+        public ActionResult RptStockInward_Grid(mdlRpt_StockInward_Rpt data)
+        {
+            string MTHDNAME = "RptStockInward_Grid";
             try
             {
                 DataTable dt = new DataTable();
@@ -290,16 +336,178 @@ namespace BinTracking.Controllers
                 if (ObjCom.ChkLgnSession(Request.Cookies) != 1)
                     return RedirectToAction(Globals.CNTRLMETHOD_LOGIN, Globals.CONTROLLER_LOGIN);
 
-                var lstItem = objMas.GetDataList<mdlInventorySLNo>("Select Barcode From ProductStock Where ProductId = " +
-                        ProductId + " and Status = " + Globals.STATUS_ACTIVE);
-                if (lstItem == null)
+                dt = Rpt_StockInward_GetQry(data);
+                if (dt == null)
                     return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 1, "Report Data Fetch Failed", "");
+
+                var lstItem = objMas.ConvertToList<mdlRptStockInward_Grid>(dt);
+                if (lstItem == null)
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 2, "Report Data Fetch Failed", "");
+                else if (lstItem.Count() == 0)
+                    return ObjCom.JsonRspMsg(0, 0, MTHDNAME, 3, "Report Datas Not Found For This Selection ...", "");
 
                 return ObjCom.JsonRspList(0, MTHDNAME, lstItem.Count, lstItem);
             }
             catch (Exception ex)
             {
                 return ObjCom.JsonRspException(MTHDNAME, ex.Message);
+            }
+        }
+
+        public ActionResult RptStockInward_Dwnld(mdlRpt_StockInward_Rpt data)
+        {
+            string MTHDNAME = "RptStockInward_Dwnld";
+            try
+            {
+                if (ObjCom.ChkLgnSession(Request.Cookies) != 1)
+                    return RedirectToAction(Globals.CNTRLMETHOD_LOGIN, Globals.CONTROLLER_LOGIN);
+
+                int ret = 0;
+                string[] ExlCols = { "Date", "Product", "Inward Qty", "From SlNo", "To SlNo", "Employee", "Remarks" };
+                DataTable dt = new DataTable();
+
+                dt = Rpt_StockInward_GetQry(data);
+
+                if (dt == null)
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 1, "Report Generate Failed", null);
+                else if (dt.Rows.Count == 0)
+                    return ObjCom.JsonRspMsg(0, 0, MTHDNAME, 1, "No Data Found For this Selection ", null);
+
+                int[] DType = Enumerable.Range(0, dt.Columns.Count).Select(n => MasterLogic.RPTSTYLE_STRING_SHORT).ToArray();
+                for (ret = 0; ret < ExlCols.Length; ret++)
+                    dt.Columns[ret].ColumnName = ExlCols[ret];
+                ret = objMas.GenerateReport(data.Format, 0, 1, 1, "Stock Inward", "Stock Inward Report", DType, null, null, null,
+                    "", "", null, null, null, dt);
+                if (ret != 1)
+                    return ObjCom.JsonRspMsg(0, 0, MTHDNAME, 1, "Report Generate Failed", null);
+
+                return ObjCom.JsonRspMsg(0, 1, MTHDNAME, 0, objMas.DBErrBuf, null);
+
+            }
+            catch (Exception Ex)
+            {
+                return ObjCom.JsonRspException(MTHDNAME, Ex.Message);
+            }
+        }
+
+        #endregion
+
+        public ActionResult RptCheck_InOut(string ip = null)
+        {
+            string MTHDNAME = "RptCheck_InOut";
+            try
+            {
+                int Mnu = 0;
+                mdlRptCheck_InOut_Pg model = new mdlRptCheck_InOut_Pg();
+                if (ObjCom.ChkLgnSession(Request.Cookies) != 1 || ip == null)
+                    return RedirectToAction(Globals.CNTRLMETHOD_LOGIN, Globals.CONTROLLER_LOGIN);
+
+                Mnu = Convert.ToInt32(ASCIIEncoding.ASCII.GetString(Convert.FromBase64String(ip)).Split('^')[0]);
+
+                ViewBag.Mnu = Mnu;
+                ViewBag.PgAction = ObjCom.GetPageAction(Mnu, Request.Cookies);
+                if (ViewBag.PgAction[3] != '1')
+                    return RedirectToAction(Globals.CNTRLMETHOD_DASHBOARD, Globals.CONTROLLER_DASHBOARD);
+
+                ViewBag.lblHeader = Mnu == Globals.MNU_RPT_CHECKIN ? "Check-In Report" : "Check-Out Report";
+
+                model.ddlProduct = objMas.GetDataList<ddlValues>("Select ProductId As ddlId,ProductDesc As ddlDesc From Products Where Status=1 order by ProductDesc");
+                if (model.ddlProduct == null)
+                {
+                    objMas.PrintLog(MTHDNAME, objMas.DBErrBuf);
+                    ViewBag.ErrorMsg = Globals.SERVER_ERROR;
+                }
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                return ObjCom.JsonRspException(MTHDNAME, ex.Message);
+            }
+        }
+
+
+        private DataTable RptCheck_InOut_GetQry(mdlRpt_CheckInOut_Rpt data)
+        {
+            string MTHDNAME = "RptCheck_InOut_GetQry";
+            try
+            {
+                DataTable dt = new DataTable();
+                int TranType = data.PgIdx == Globals.MNU_RPT_CHECKIN ? 1 : 2;
+
+                return dt = objMas.GetDataTable("EXEC Rpt_Check_InOut '" + data.FromDate + "','" + data.ToDate + "', " + data.ProductId + "," + TranType);
+            }
+            catch (Exception ex)
+            {
+                ObjCom.JsonRspException(MTHDNAME, ex.Message);
+                return null;
+            }
+        }
+
+
+        public ActionResult RptCheck_InOut_Grid(mdlRpt_CheckInOut_Rpt data)
+        {
+            string MTHDNAME = "RptCheck_InOut_Grid";
+            try
+            {
+                DataTable dt = new DataTable();
+
+                if (ObjCom.ChkLgnSession(Request.Cookies) != 1)
+                    return RedirectToAction(Globals.CNTRLMETHOD_LOGIN, Globals.CONTROLLER_LOGIN);
+
+                dt = RptCheck_InOut_GetQry(data);
+                if (dt == null)
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 1, "Report Data Fetch Failed", "");
+
+                var lstItem = objMas.ConvertToList<mdlRptCheckInOut_Grid>(dt);
+                if (lstItem == null)
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 2, "Report Data Fetch Failed", "");
+                else if (lstItem.Count() == 0)
+                    return ObjCom.JsonRspMsg(0, 0, MTHDNAME, 3, "Report Datas Not Found For This Selection ...", "");
+
+                return ObjCom.JsonRspList(0, MTHDNAME, lstItem.Count, lstItem);
+            }
+            catch (Exception ex)
+            {
+                return ObjCom.JsonRspException(MTHDNAME, ex.Message);
+            }
+        }
+
+        public ActionResult RptCheck_InOut_Dwnld(mdlRpt_CheckInOut_Rpt data)
+        {
+            string MTHDNAME = "RptCheck_InOut_Dwnld";
+            try
+            {
+                if (ObjCom.ChkLgnSession(Request.Cookies) != 1)
+                    return RedirectToAction(Globals.CNTRLMETHOD_LOGIN, Globals.CONTROLLER_LOGIN);
+
+                string RptName = "";
+                int ret = 0;
+                string[] ExlCols = { "Date", "Transporter","Vehicle", "Customer","Product", "Qty", "Employee", "Serial Numbers" };
+                DataTable dt = new DataTable();
+
+                dt = RptCheck_InOut_GetQry(data);
+
+                if (dt == null)
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 1, "Report Generate Failed", null);
+                else if (dt.Rows.Count == 0)
+                    return ObjCom.JsonRspMsg(0, 0, MTHDNAME, 1, "No Data Found For this Selection ", null);
+
+                RptName = data.PgIdx == Globals.MNU_RPT_CHECKIN ? "Check-In Report" : "Check-Out Report";
+
+                int[] DType = Enumerable.Range(0, dt.Columns.Count).Select(n => MasterLogic.RPTSTYLE_STRING_SHORT).ToArray();
+                for (ret = 0; ret < ExlCols.Length; ret++)
+                    dt.Columns[ret].ColumnName = ExlCols[ret];
+                ret = objMas.GenerateReport(data.Format, 0, 1, 1, RptName, RptName, DType, null, null, null,
+                    data.FromDate, data.ToDate, null, null, null, dt);
+                if (ret != 1)
+                    return ObjCom.JsonRspMsg(0, 0, MTHDNAME, 1, "Report Generate Failed", null);
+
+                return ObjCom.JsonRspMsg(0, 1, MTHDNAME, 0, objMas.DBErrBuf, null);
+
+            }
+            catch (Exception Ex)
+            {
+                return ObjCom.JsonRspException(MTHDNAME, Ex.Message);
             }
         }
     }

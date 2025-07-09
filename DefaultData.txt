@@ -10,13 +10,15 @@ INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status])
 INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 206, N'Reason', N'11111', 1);
 INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 207, N'Page Action', N'11111', 1);
 INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 301, N'Inventory', N'11111', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 302, N'Customer Inventory', N'11111', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 303, N'Stock Adjust', N'11111', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 304, N'Customer Stock Adjust', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 302, N'Stock Adjust', N'11111', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 303, N'Customer Stock Adjust', N'11111', 1);
 INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 401, N'Stock Adjust Report', N'10011', 1);
 INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 402, N'Customer Stock Adjust Report', N'10011', 1);
 INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 403, N'Inventory Report', N'10011', 1);
 INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 404, N'Customer Inventory Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 405, N'Stock Inward Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 406, N'CheckIn Report', N'10011', 1);
+INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 407, N'CheckOut Report', N'10011', 1);
 
 
 Insert into Employees (EmpId,EmpCode,EmpName,Email,Mobile,AppPwd,SessionId,[Status],CreatedOn) 

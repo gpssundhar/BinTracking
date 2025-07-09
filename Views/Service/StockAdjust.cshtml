@@ -279,8 +279,10 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
-                    if (response.Success == 0)
+                    if (response.Success == 0) {
+                        LoadGrid();
                         toastr.error(response.Message);
+                    }
                     else if (response.Success == 1) {
                         toastr.success(response.Message);
                         //LoadGrid();

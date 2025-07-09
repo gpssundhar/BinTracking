@@ -328,6 +328,8 @@
     <Content Include="Views\Report\RptStockAdjust.cshtml" />
     <Content Include="Views\Report\RptInventory.cshtml" />
     <Content Include="Views\Dashboard\Dashboard.cshtml" />
+    <Content Include="Views\Report\RptStockInward.cshtml" />
+    <Content Include="Views\Report\RptCheck_InOut.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

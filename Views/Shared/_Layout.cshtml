@@ -105,9 +105,9 @@
                                 <a href="@Url.Action("Inventory","Service")?ip=@objMas.AppEncrypt(Globals.MNU_SRV_INVENTORY.ToString())">Inventory </a>
                             </li>
                             
-                            <li hidden id="mnuSerCustInventory">
+                            @*<li hidden id="mnuSerCustInventory">
                                 <a href="@Url.Action("Inventory","Service")?ip=@objMas.AppEncrypt(Globals.MNU_SRV_CUSTINVENTORY.ToString())">Customer Inventory </a>
-                            </li>
+                            </li>*@
 
                             <li hidden id="mnuSerStkAdjust">
                                 <a href="@Url.Action("StockAdjust","Service")?ip=@objMas.AppEncrypt(Globals.MNU_SRV_STOCKADJUST.ToString())">Stock Adjust </a>
@@ -146,6 +146,18 @@
 
                             <li hidden id="mnuRptCustStkAdjust">
                                 <a href="@Url.Action("RptStockAdjust","Report")?ip=@objMas.AppEncrypt(Globals.MNU_RPT_CUSTSTOCKADJUST.ToString())">Customer Stock Adjust</a>
+                            </li>
+
+                            <li hidden id="mnuRptStockInward">
+                                <a href="@Url.Action("RptStockInward","Report")">Stock Inward</a>
+                            </li>
+
+                            <li hidden id="mnuRptCheckIn">
+                                <a href="@Url.Action("RptCheck_InOut","Report")?ip=@objMas.AppEncrypt(Globals.MNU_RPT_CHECKIN.ToString())">Check-In</a>
+                            </li>
+
+                            <li hidden id="mnuRptCheckOut">
+                                <a href="@Url.Action("RptCheck_InOut","Report")?ip=@objMas.AppEncrypt(Globals.MNU_RPT_CHECKOUT.ToString())">Check-Out</a>
                             </li>
 
                         </ul>
@@ -391,7 +403,8 @@
                     var i, j, k;
                     var mnuHdr = [mnuTypDashboard, mnuTypMaster, mnuTypService, mnuTypeReport];
                     var mnuSub = [[mnuDasDashboard], [mnuMasEmployee, mnuMasTransporter, mnuMasShift, mnuMasProducts, mnuMasCustomers, mnuMasReason, mnuMasPgAction],
-                        [mnuSerInventory, mnuSerCustInventory, mnuSerStkAdjust, mnuSerCustStkAdjust], [mnuRptInventory, mnuRptCusInventory, mnuRptStkAdjust, mnuRptCustStkAdjust]];
+                        [mnuSerInventory, mnuSerStkAdjust, mnuSerCustStkAdjust], [mnuRptInventory, mnuRptCusInventory, mnuRptStkAdjust, mnuRptCustStkAdjust,
+                            mnuRptStockInward, mnuRptCheckIn, mnuRptCheckOut]];
 
                     i = j = k = 0;
 

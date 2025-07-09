@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <_PublishTargetUrl>C:\Sundhar\Published\BinTracking</_PublishTargetUrl>
-    <History>True|2025-07-07T07:18:20.2243978Z;True|2025-07-07T12:03:48.7636748+05:30;True|2025-07-07T11:54:23.0679653+05:30;True|2025-06-22T17:43:29.5977538+05:30;False|2025-06-22T17:43:11.8846504+05:30;True|2025-06-22T17:28:19.2415944+05:30;True|2025-06-20T08:17:07.1935657+05:30;False|2025-06-20T08:16:45.1124841+05:30;True|2025-06-20T07:57:35.5058493+05:30;True|2025-06-18T12:39:38.5301538+05:30;True|2025-06-09T11:09:04.5743584+05:30;</History>
+    <History>True|2025-07-09T14:53:08.2863307Z;True|2025-07-07T12:48:20.2243978+05:30;True|2025-07-07T12:03:48.7636748+05:30;True|2025-07-07T11:54:23.0679653+05:30;True|2025-06-22T17:43:29.5977538+05:30;False|2025-06-22T17:43:11.8846504+05:30;True|2025-06-22T17:28:19.2415944+05:30;True|2025-06-20T08:17:07.1935657+05:30;False|2025-06-20T08:16:45.1124841+05:30;True|2025-06-20T07:57:35.5058493+05:30;True|2025-06-18T12:39:38.5301538+05:30;True|2025-06-09T11:09:04.5743584+05:30;</History>
   </PropertyGroup>
   <ItemGroup>
     <File Include="assets/css/elements/tooltip.css">
@@ -27,7 +27,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>05/21/2025 09:49:30</publishTime>
     </File>
     <File Include="assets/css/structure.css">
-      <publishTime>07/05/2025 13:15:30</publishTime>
+      <publishTime>07/09/2025 11:59:58</publishTime>
     </File>
     <File Include="assets/css/toastr.min.css">
       <publishTime>05/25/2025 13:52:37</publishTime>
@@ -132,10 +132,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/10/2013 16:29:20</publishTime>
     </File>
     <File Include="bin/BinTracking.dll">
-      <publishTime>07/07/2025 12:48:19</publishTime>
+      <publishTime>07/09/2025 20:23:06</publishTime>
     </File>
     <File Include="bin/BinTracking.pdb">
-      <publishTime>07/07/2025 12:48:19</publishTime>
+      <publishTime>07/09/2025 20:23:06</publishTime>
     </File>
     <File Include="bin/EPPlus.dll">
       <publishTime>03/01/2023 21:12:14</publishTime>
@@ -378,7 +378,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>05/21/2025 09:08:36</publishTime>
     </File>
     <File Include="DefaultData.txt">
-      <publishTime>07/07/2025 12:02:45</publishTime>
+      <publishTime>07/09/2025 20:16:34</publishTime>
     </File>
     <File Include="favicon.ico">
       <publishTime>05/21/2025 09:08:37</publishTime>
@@ -657,7 +657,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>05/21/2025 09:08:43</publishTime>
     </File>
     <File Include="SOP_BinTracking.txt">
-      <publishTime>07/07/2025 12:03:40</publishTime>
+      <publishTime>07/09/2025 20:22:08</publishTime>
     </File>
     <File Include="Views/Dashboard/Dashboard.cshtml">
       <publishTime>05/25/2025 14:36:58</publishTime>
@@ -666,46 +666,52 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>05/30/2025 16:43:51</publishTime>
     </File>
     <File Include="Views/Master/Customers.cshtml">
-      <publishTime>06/22/2025 15:18:54</publishTime>
+      <publishTime>07/09/2025 20:13:42</publishTime>
     </File>
     <File Include="Views/Master/Employees.cshtml">
-      <publishTime>06/22/2025 15:19:32</publishTime>
+      <publishTime>07/09/2025 20:13:54</publishTime>
     </File>
     <File Include="Views/Master/PageAction.cshtml">
       <publishTime>06/20/2025 07:51:09</publishTime>
     </File>
     <File Include="Views/Master/Products.cshtml">
-      <publishTime>07/07/2025 12:46:41</publishTime>
+      <publishTime>07/09/2025 12:30:30</publishTime>
     </File>
     <File Include="Views/Master/Reason.cshtml">
-      <publishTime>06/22/2025 15:20:16</publishTime>
+      <publishTime>07/09/2025 20:14:38</publishTime>
     </File>
     <File Include="Views/Master/Shifts.cshtml">
-      <publishTime>07/07/2025 11:38:09</publishTime>
+      <publishTime>07/09/2025 20:14:48</publishTime>
     </File>
     <File Include="Views/Master/Transporter.cshtml">
-      <publishTime>06/22/2025 15:24:54</publishTime>
+      <publishTime>07/09/2025 20:14:59</publishTime>
+    </File>
+    <File Include="Views/Report/RptCheck_InOut.cshtml">
+      <publishTime>07/09/2025 19:30:01</publishTime>
     </File>
     <File Include="Views/Report/RptCustomerInventory.cshtml">
       <publishTime>05/21/2025 20:56:09</publishTime>
     </File>
     <File Include="Views/Report/RptInventory.cshtml">
-      <publishTime>06/22/2025 15:41:31</publishTime>
+      <publishTime>07/09/2025 13:30:14</publishTime>
     </File>
     <File Include="Views/Report/RptStockAdjust.cshtml">
       <publishTime>06/22/2025 17:01:54</publishTime>
     </File>
+    <File Include="Views/Report/RptStockInward.cshtml">
+      <publishTime>07/09/2025 14:59:12</publishTime>
+    </File>
     <File Include="Views/Service/Inventory.cshtml">
-      <publishTime>06/18/2025 17:29:12</publishTime>
+      <publishTime>07/09/2025 20:20:23</publishTime>
     </File>
     <File Include="Views/Service/StockAdjust.cshtml">
-      <publishTime>06/22/2025 17:40:49</publishTime>
+      <publishTime>07/07/2025 19:55:17</publishTime>
     </File>
     <File Include="Views/Shared/Error.cshtml">
       <publishTime>05/21/2025 09:08:37</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>07/05/2025 13:31:52</publishTime>
+      <publishTime>07/09/2025 19:04:32</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>06/09/2025 10:51:58</publishTime>

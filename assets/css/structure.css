@@ -18,8 +18,8 @@ h1, h2, h3, h4, h5, h6 { color: #3b3f5c; }
   background: transparent;
 }
 ::selection {
-  color: var(--primary-color);
-  background: transparent;
+    color: var(--primary-color);
+    background: #0d6efd;
 }
 
 a {
@@ -2417,8 +2417,8 @@ input:checked + .slider:before {
 
 
 ::selection {
-  color: var(--primary-color);
-  background: transparent;
+    color: var(--primary-color);
+    background: #B4D5FE;
 }
 
  /* Scrollbar */

@@ -1,24 +1,33 @@
-﻿@model BinTracking.Models.mdlRptInventory_Pg
+﻿@model BinTracking.Models.mdlRptCheck_InOut_Pg
 @{
-    ViewBag.Title = "RptInventory";
+    ViewBag.Title = "RptCheck_InOut";
 }
-<!-- Main Body Starts -->
 <div class="p-4 mt-4">
     <div class="mb-2">
         <div class="widget-content widget-content-area br-6 date-table-container">
             <div class="filter-section mb-4">
-                <h4 id="lblHeader" class="table-header" style="color: var(--primary-color);">Inventory Report</h4>
+                <h4 id="lblHeader" class="table-header" style="color: var(--primary-color);">Check In Out Report</h4>
             </div>
 
             <div class="report-filters mb-5">
                 <div class="row mt-3 mb-4" style="display: flex;align-items: center;">
+                    <div class="col-sm-4 searchformfld">
+                        <label>From</label>
+                        <input type="date" class="form-control" placeholder=" " id="dtFromDate">
+                    </div>
+
+                    <div class="col-sm-4 searchformfld">
+                        <label>To</label>
+                        <input type="date" class="form-control" placeholder=" " id="dtToDate">
+                    </div>
+
                     <div id="dvCustomer" class="col-sm-4 searchformfld">
-                        <label>Customer</label>
-                        <select class="form-control form-select EMS-select" id="ddlCustomer">
+                        <label>Products</label>
+                        <select class="form-control form-select EMS-select" id="ddlProduct">
                             <option value="0">All</option>
-                            @if (Model.ddlCustomer != null && Model.ddlCustomer.Count >= 1)
+                            @if (Model.ddlProduct != null && Model.ddlProduct.Count >= 1)
                             {
-                                foreach (var item in Model.ddlCustomer)
+                                foreach (var item in Model.ddlProduct)
                                 {
                                     <option value="@item.ddlId">@item.ddlDesc</option>
                                 }
@@ -40,6 +49,14 @@
                     <div class="col-sm-3"></div>
 
                     <div class="col-sm-6 reports-btns">
+                        <button class="btn btn-primary" onclick="LoadGrid()">
+                            <span>Show</span>
+                            <i class="las la-save la-lg"></i>
+                        </button>
+                        <button class="btn btn-danger" onclick="fnClear()">
+                            <span>Clear</span>
+                            <i class="las la-eraser la-lg"></i>
+                        </button>
                         <button class="btn btn-primary" onclick="fnDownload()">
                             <span>Download</span>
                             <i class="las la-file-download la-lg"></i>
@@ -86,26 +103,39 @@
         </div>
     </div>
 </div>
-
 <script>
     $(document).ready(function () {
-        document.getElementById("dvCustomer").style.display = "@ViewBag.dvCust";
         $("#lblHeader").text("@ViewBag.lblHeader");
-        LoadGrid();
+        fnClear();
     });
+
+    function fnClear() {
+        try {
+            $('#tblGrid').hide(true);
+            $('#dtFromDate').val(new Date().toISOString().substring(0, 10));
+            $('#dtToDate').val(new Date().toISOString().substring(0, 10));
+        }
+        catch (e) {
+            toastr.error("Error - 1 ::: " + e.message);
+        }
+    }
 
     function LoadGrid() {
         try {
             let dataset = [];
+            var FromDate = $('#dtFromDate').val() == null ? "" : $('#dtFromDate').val();
+            var ToDate = $('#dtToDate').val() == null ? "" : $('#dtToDate').val();
             var Format = $('#ddlDwnFmt').val();
-            var Customer = $('#ddlCustomer').val();
+            var Product = $('#ddlProduct').val();
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("RptInventory_Grid", "Report")',
+                url: '@Url.Action("RptCheck_InOut_Grid", "Report")',
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: JSON.stringify({
-                    "CustId": Customer,
+                    "FromDate": FromDate,
+                    "ToDate": ToDate,
+                    "ProductId": Product,
                     "Format": Format,
                     "PgIdx": @ViewBag.Mnu,
                 }),
@@ -120,11 +150,11 @@
                     len = jsonData.length;
                     for (i = 0; i < len; i++) {
                         var _edit = "<a href=\"javascript:void(0)\" class=\"tableIconA bs-tooltip\" data-toggle=\"modal\" " +
-                            "title=\"Details\" style=\"margin-right:10px;\" onclick=\"fnShowSerial('" + jsonData[i].Barcode +
+                            "title=\"Details\" style=\"margin-right:10px;\" onclick=\"fnShowSerial('" + jsonData[i].SlNos +
                             "')\"><i class=\"las la-eye la-lg \" aria-hidden=\"true\" style=\"color: #178755;cursor: pointer;\"></i></a> ";
 
-                        dataset.push([(i + 1), jsonData[i].CustDesc,jsonData[i].ProductDesc, jsonData[i].BarcodeQty,
-                        "<div class=\"d-inline\">" + _edit + "</div>"]);
+                        dataset.push([(i + 1), jsonData[i].TranDate, jsonData[i].TransporterDesc, jsonData[i].VehicleNo, jsonData[i].CustDesc,
+                            jsonData[i].ProductDesc, jsonData[i].Quantity, jsonData[i].EmpName, "<div class=\"d-inline\">" + _edit + "</div>"]);
                     }
 
                     $('#tblGrid').DataTable({
@@ -137,13 +167,10 @@
                         },
                         "lengthMenu": [10, 30, 50, 70],
                         "pageLength": 10,
-                        'aoColumnDefs': [{
-                            'visible': (@ViewBag.grdCust),
-                            'targets': [1]
-                        }],
 
                         data: dataset,
-                        columns: [{ title: "#", width: "1%" }, { title: "Customer" }, { title: "Product" }, { title: "Stock Qty" },{ title: "Serial Number", width: "10%" }]
+                        columns: [{ title: "#", width: "1%" }, { title: "Date" }, { title: "Transporter" }, { title: "Vehicle" }, { title: "Customer" },
+                            { title: "Product" }, { title: "Quantity" }, { title: "Employee" }, { title: "Serial Numbers" }]
                     });
 
                 }
@@ -153,7 +180,6 @@
             alert("Error - 2 \n " + e.message);
         }
     }
-
 
     function fnShowSerial(SLNo) {
         try {
@@ -185,17 +211,21 @@
     function fnDownload() {
         try {
             //ShowProgress(1);
+            var FromDate = $('#dtFromDate').val() == null ? "" : $('#dtFromDate').val();
+            var ToDate = $('#dtToDate').val() == null ? "" : $('#dtToDate').val();
+            var Product = $('#ddlProduct').val();
             var Format = $('#ddlDwnFmt').val();
-            var Customer = $('#ddlCustomer').val();
 
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("RptInventory_Dwnld", "Report")',
+                url: '@Url.Action("RptCheck_InOut_Dwnld", "Report")',
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: JSON.stringify({
+                    "FromDate": FromDate,
+                    "ToDate": ToDate,
                     "Format": Format,
-                    "CustId": Customer,
+                    "ProductId": Product,
                     "PgIdx": @ViewBag.Mnu,
                 }),
                 success: function (jsonData) {

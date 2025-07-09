@@ -7,7 +7,7 @@
     <div class="mb-2">
         <div class="widget-content widget-content-area date-table-container">
             <div class="filter-section mb-4">
-                <h4 class="table-header" style="color: var(--primary-color);">Shift Master</h4>
+                <h4 class="table-header" style="color: var(--primary-color);">Shifts</h4>
                 @if (ViewBag.PgAction[0] == '1')
                 {
                     <button class="btn" onclick="fnClear(1)" style="background: var(--primary-color);color: white;"><i class="las la-plus-circle la-lg"></i>Add</button>
@@ -43,7 +43,7 @@
             <div class="modal-body">
                 <div class="row" style="display: flex;align-items: center;">
                     <div class="col-sm-6 searchformfld">
-                        <input type="text" class="form-control EMS-inputfields" placeholder=" " id="txtIpShiftDesc" maxlength="50" onkeypress="return EmpName(event)" ondrop="return false">
+                        <input type="text" class="form-control EMS-inputfields" placeholder=" " id="txtIpShiftDesc" maxlength="10" onkeypress="return EmpName(event)" ondrop="return false">
                         <label class="mb-0">Shift</label>
                     </div>
                     <div class="col-sm-6 searchformfld">
@@ -228,7 +228,7 @@
         }
     }
 
-    function fnEdit(Id, Code, Desc, FromTime, ToTime, Status) {
+    function fnEdit(Id, Desc, FromTime, ToTime, Status) {
         try {
             $('#hdnId').val(Id);
             $('#txtIpShiftDesc').val(Desc);

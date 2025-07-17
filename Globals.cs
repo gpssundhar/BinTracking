@@ -6,7 +6,7 @@ using System.Web;
 public class Globals
 {
 
-    public const string APPVER = "1.0.0 Realeased on 09.06.2025";//Started -> 16.05.2025"
+    public const string APPVER = "1.0.0 Date-17.07.2025";//Started -> 16.05.2025"
 
     public static string IMGPATH = "Upload";// Organization logo folder
 
@@ -14,7 +14,7 @@ public class Globals
 
     // Global Variables
     // App Admin UserId 
-    public static string SUPERADMIN_ID = "admin@otaindia.com";
+    //public static string SUPERADMIN_ID = "admin@otaindia.com";
     public static string gsAppName = "Bin Tracking";
 
     // Cookie

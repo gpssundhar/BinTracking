@@ -146,6 +146,10 @@
 
                     if (jsonData == null)
                         return;
+                    if (jsonData.Success == 0) {
+                        toastr.error(jsonData.Message);
+                        return;
+                    }
 
                     len = jsonData.length;
                     for (i = 0; i < len; i++) {

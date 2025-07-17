@@ -273,7 +273,7 @@ namespace BinTracking.Controllers
         }
 
 
-        public ActionResult Vehicle_Delete(int Id, string Vehicle)
+        public ActionResult Vehicle_Delete(int Id, string Vehicle, int IsClear)
         {
             string MTHDNAME = ": Vehicle_Delete";
             try
@@ -282,7 +282,7 @@ namespace BinTracking.Controllers
                     return RedirectToAction(Globals.CNTRLMETHOD_LOGIN, Globals.CONTROLLER_LOGIN);
 
                 List<mdlTVehicle> lstItem = objMas.GetDataList<mdlTVehicle>("EXEC TVehicle_Delete " + Globals.MNU_MAS_TRANSPORTER + "," +
-                    Id + ",'" + Vehicle + "', " + Request.Cookies.Get(Globals.COOKIE_LGNEMPID).Value);
+                    Id + ",'" + Vehicle + "',"+ IsClear + ", " + Request.Cookies.Get(Globals.COOKIE_LGNEMPID).Value);
 
                 if (lstItem == null)
                     return ObjCom.JsonRspMsg(0, 0, MTHDNAME, 2, Globals.SERVER_ERROR + " " + objMas.DBErrBuf, null);

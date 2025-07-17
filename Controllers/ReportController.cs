@@ -119,6 +119,16 @@ namespace BinTracking.Controllers
                 string RptName = "";
                 string[] ExlCols = { "Customer", "Product", "Adjusted Qty", "Stock Qty", "Serial Numbers", "Reason", "Employee" };
                 DataTable dt = new DataTable();
+                DateTime FromDate = Convert.ToDateTime(data.FromDate);
+                DateTime ToDate = Convert.ToDateTime(data.ToDate);
+                data.FromDate = FromDate.ToString("dd-MM-yyyy");
+                data.ToDate = ToDate.ToString("dd-MM-yyyy");
+
+                if (objMas.ChkDateRange(MasterLogic.DTRNG_LESS_EQUAL_TODAY, MasterLogic.DTRNG_LESS_EQUAL_TODAY, 1, 1, "From", "To", data.FromDate, data.ToDate) != 1)
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 1, objMas.DBErrBuf, "");
+
+                data.FromDate = FromDate.ToString("yyyy-MM-dd");
+                data.ToDate = ToDate.ToString("yyyy-MM-dd");
 
                 dt = Rpt_StockAdjust_GetQry(data);
 
@@ -332,9 +342,19 @@ namespace BinTracking.Controllers
             try
             {
                 DataTable dt = new DataTable();
+                DateTime FromDate = Convert.ToDateTime(data.FromDate);
+                DateTime ToDate = Convert.ToDateTime(data.ToDate);
+                data.FromDate = FromDate.ToString("dd-MM-yyyy");
+                data.ToDate = ToDate.ToString("dd-MM-yyyy");
 
                 if (ObjCom.ChkLgnSession(Request.Cookies) != 1)
                     return RedirectToAction(Globals.CNTRLMETHOD_LOGIN, Globals.CONTROLLER_LOGIN);
+
+                if (objMas.ChkDateRange(MasterLogic.DTRNG_LESS_EQUAL_TODAY, MasterLogic.DTRNG_LESS_EQUAL_TODAY, 1, 1, "From", "To", data.FromDate, data.ToDate) != 1)
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 1, objMas.DBErrBuf, "");
+
+                data.FromDate = FromDate.ToString("yyyy-MM-dd");
+                data.ToDate = ToDate.ToString("yyyy-MM-dd");
 
                 dt = Rpt_StockInward_GetQry(data);
                 if (dt == null)
@@ -365,6 +385,16 @@ namespace BinTracking.Controllers
                 int ret = 0;
                 string[] ExlCols = { "Date", "Product", "Inward Qty", "From SlNo", "To SlNo", "Employee", "Remarks" };
                 DataTable dt = new DataTable();
+                DateTime FromDate = Convert.ToDateTime(data.FromDate);
+                DateTime ToDate = Convert.ToDateTime(data.ToDate);
+                data.FromDate = FromDate.ToString("dd-MM-yyyy");
+                data.ToDate = ToDate.ToString("dd-MM-yyyy");
+
+                if (objMas.ChkDateRange(MasterLogic.DTRNG_LESS_EQUAL_TODAY, MasterLogic.DTRNG_LESS_EQUAL_TODAY, 1, 1, "From", "To", data.FromDate, data.ToDate) != 1)
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 1, objMas.DBErrBuf, "");
+
+                data.FromDate = FromDate.ToString("yyyy-MM-dd");
+                data.ToDate = ToDate.ToString("yyyy-MM-dd");
 
                 dt = Rpt_StockInward_GetQry(data);
 
@@ -450,9 +480,19 @@ namespace BinTracking.Controllers
             try
             {
                 DataTable dt = new DataTable();
+                DateTime FromDate = Convert.ToDateTime(data.FromDate);
+                DateTime ToDate = Convert.ToDateTime(data.ToDate);
+                data.FromDate = FromDate.ToString("dd-MM-yyyy");
+                data.ToDate = ToDate.ToString("dd-MM-yyyy");
 
                 if (ObjCom.ChkLgnSession(Request.Cookies) != 1)
                     return RedirectToAction(Globals.CNTRLMETHOD_LOGIN, Globals.CONTROLLER_LOGIN);
+
+                if (objMas.ChkDateRange(MasterLogic.DTRNG_LESS_EQUAL_TODAY, MasterLogic.DTRNG_LESS_EQUAL_TODAY, 1, 1, "From", "To", data.FromDate, data.ToDate) != 1)
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 1, objMas.DBErrBuf, "");
+
+                data.FromDate = FromDate.ToString("yyyy-MM-dd");
+                data.ToDate = ToDate.ToString("yyyy-MM-dd");
 
                 dt = RptCheck_InOut_GetQry(data);
                 if (dt == null)
@@ -484,6 +524,16 @@ namespace BinTracking.Controllers
                 int ret = 0;
                 string[] ExlCols = { "Date", "Transporter","Vehicle", "Customer","Product", "Qty", "Employee", "Serial Numbers" };
                 DataTable dt = new DataTable();
+                DateTime FromDate = Convert.ToDateTime(data.FromDate);
+                DateTime ToDate = Convert.ToDateTime(data.ToDate);
+                data.FromDate = FromDate.ToString("dd-MM-yyyy");
+                data.ToDate = ToDate.ToString("dd-MM-yyyy");
+
+                if (objMas.ChkDateRange(MasterLogic.DTRNG_LESS_EQUAL_TODAY, MasterLogic.DTRNG_LESS_EQUAL_TODAY, 1, 1, "From", "To", data.FromDate, data.ToDate) != 1)
+                    return ObjCom.JsonRspMsg(1, 0, MTHDNAME, 1, objMas.DBErrBuf, "");
+
+                data.FromDate = FromDate.ToString("yyyy-MM-dd");
+                data.ToDate = ToDate.ToString("yyyy-MM-dd");
 
                 dt = RptCheck_InOut_GetQry(data);
 

@@ -1,163 +1,22 @@
-﻿--Release - SOP	09-07-2025
+﻿--Release - SOP	17-07-2025
 --***********	**********
-
-Truncate Table AppMenus;
-Truncate Table MenuMapping;
-
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (1, 101, N'Dashboard', N'00010', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 201, N'Employees', N'11111', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 202, N'Transporter', N'11111', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 203, N'Shifts', N'11111', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 204, N'Products', N'11111', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 205, N'Customers', N'11111', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 206, N'Reason', N'11111', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (2, 207, N'Page Action', N'11111', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 301, N'Inventory', N'11111', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 302, N'Stock Adjust', N'11111', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (3, 303, N'Customer Stock Adjust', N'11111', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 401, N'Stock Adjust Report', N'10011', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 402, N'Customer Stock Adjust Report', N'10011', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 403, N'Inventory Report', N'10011', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 404, N'Customer Inventory Report', N'10011', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 405, N'Stock Inward Report', N'10011', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 406, N'CheckIn Report', N'10011', 1);
-INSERT [dbo].[AppMenus] ([MenuType], [MenuId], [MenuDesc], [PgAction], [Status]) VALUES (4, 407, N'CheckOut Report', N'10011', 1);
-
-
-ALTER Procedure [dbo].[Product_Grid](@Status int)
+ALTER PROCEDURE [dbo].[Rpt_Check_InOut](@FromDate Varchar(10), @ToDate Varchar(10),@ProductId Varchar(15),@TranType int)
 As
 Begin
-	SELECT P.ProductId, P.ProductCode, P.ProductDesc, P.Stock, P.CustStock, P.Stock - P.CustStock as StockInHand, P.[Status],
-	STRING_AGG(Concat(PS.SlNo,' | ',PS.Barcode), ',') AS Barcodes FROM Products P LEFT JOIN ProductStock PS ON P.ProductId = PS.ProductId AND 
-	PS.[Status] = 1 and PS.CustId = 0 WHERE P.[Status] = @Status GROUP BY P.ProductId, P.ProductCode, P.ProductDesc, P.Stock,P.CustStock, P.[Status];
-End
+	Declare @Qry as Varchar(max) = '';
 
+	Set @Qry = concat('Select Convert(varchar(10),TH.TranDate,121) as TranDate,T.TransporterDesc,TH.VehicleNo, C.CustDesc, P.ProductDesc, COUNT(Barcode) as Quantity, E.EmpName, ',
+					' STRING_AGG(CONCAT(TL.SlNo,'' | '', TL.Barcode),'','') as SlNos From TranHeader TH, TranLines TL, Customers C, ',
+					' Products P,Transporters T, Employees E Where TH.TranId = TL.TranId and TL.CustId = C.CustId and TL.ProductId = ',
+					' P.ProductId and TH.TransporterId = T.TransporterId and TH.EmpId = E.EmpId and TH.Status = 1 and TL.Status = 1 and Convert(varchar(10),TH.TranDate,121) >= ''',
+					@FromDate, ''' and Convert(varchar(10),TH.TranDate,121) <= ''', @ToDate, ''' and TH.TranType = ', @TranType);
 
-ALTER PROCEDURE [dbo].[StockAdjust_Save](@PgIdx int, @EmpId bigint, @CustId bigint, @ProductId int, @AdjType int, 
-@AdjQty int, @Stock int, @SlNos Varchar(max), @ReasonId int, @ErrorMsg Varchar(1500) OUTPUT)
-As
-Begin
-declare @Cnt as int;
-declare @pCnt as int;
-declare @StockAdjID as int;
-Declare @ProductDesc as Varchar(100) = '';
-DECLARE @CurrentCount INT;
-DECLARE @CurrentCustCount INT;
-DECLARE @ExistingCount INT;
-	Begin Try
-		Begin Transaction
-		SELECT @Cnt = CASE WHEN EXISTS (SELECT 1 FROM DBLog WHERE PgIdx = @PgIdx) THEN (SELECT MAX(SlNo) + 1 FROM DBLog WHERE PgIdx = @PgIdx)
-		ELSE 1 END;
+	IF(@ProductId != '0')
+		Set @Qry = concat(@Qry, ' and TL.ProductId = ', @ProductId)
 
-		select @ExistingCount = Stock,@ProductDesc = ProductDesc From Products Where ProductId = @ProductId;
+	Set @Qry = concat(@Qry, ' Group By TH.TranDate,C.CustDesc,P.ProductDesc,T.TransporterDesc,TH.VehicleNo,E.EmpName Order By TH.TranDate, ',
+						' C.CustDesc,P.ProductDesc');
 
-		Select @StockAdjID = ISNULL(Max(StkAdjId),0)+1 from StockAdjust;
-		
-		Select @pCnt = COUNT(1) from TmpTable T, ProductStock PS Where T.Idx = @PgIdx and T.EmpId = @EmpId and 
-		T.IData2 = PS.ProductId and T.IData3 = PS.SlNo and T.IData1 != PS.CustId;
-
-		IF(@pCnt != 0)
-			BEGIN
-				Set @ErrorMsg = 'One or more of the selected barcodes have already been checked out.';
-				RAISERROR (@ErrorMsg, 16, 1)
-			END
-		
-		Insert into StockAdjust(StkAdjId,EmpId,CustId,ProductId,StkAdjType,AdjustQty,Stock,SlNos,ReasonId,[Status],CreatedOn) 
-		Values(@StockAdjID,@EmpId,@CustId,@ProductId,@AdjType,@AdjQty,@Stock,@SlNos,@ReasonId,1,GETDATE());
-
-		Insert into DBLog (PgIdx, EmpId, ProcName, SlNo, LogData, CreatedOn) Values(@PgIdx,@EmpId,'StockAdjust_Save',@Cnt,
-				'Stock Adjustment for Product : ''' + @ProductDesc +''' Created. Qty : '+ Cast(@AdjQty AS VARCHAR(7)), GETDATE());
-		Set @Cnt = @Cnt + 1;
-
-		Update PS set PS.[Status] = 0 from ProductStock PS, TmpTable T Where T.Idx = @PgIdx and T.EmpId = @EmpId and 
-		T.IData1 = PS.CustId and T.IData2 = PS.ProductId and T.IData3 = PS.SlNo;
-
-		Insert into DBLog (PgIdx, EmpId, ProcName, SlNo, LogData, CreatedOn) Values(@PgIdx,@EmpId,'StockAdjust_Save',@Cnt,
-				'Stock Adjusted for Product : ''' + @ProductDesc +'''. SlNos : '+ @SlNos, GETDATE());
-		Set @Cnt = @Cnt + 1;
-
-		Select @CurrentCount = Count(1) from ProductStock Where ProductId = @ProductId and Status = 1;
-
-		IF(@CustId != 0)
-		BEGIN
-			Select @CurrentCustCount = Count(1) from ProductStock Where ProductId = @ProductId and CustId = @CustId and Status = 1;
-
-			Update Products Set CustStock = @CurrentCustCount Where ProductId = @ProductId;
-		END
-
-		Update Products Set Stock = @CurrentCount Where ProductId = @ProductId;
-
-		Insert into DBLog (PgIdx, EmpId, ProcName, SlNo, LogData, CreatedOn) Values(@PgIdx,@EmpId,'StockAdjust_Save',@Cnt,
-				'Stock Count Modified From ' + CAST(@ExistingCount AS VARCHAR(7)) +' To '+ CAST(@CurrentCount AS VARCHAR(7)), GETDATE());
-		
-		delete from TmpTable where Idx=@PgIdx and EmpId =@EmpId
-
-		Commit Transaction
-	End Try
-	Begin Catch
-		Rollback Transaction
-		if (len(@ErrorMsg) = 0)
-			set @ErrorMsg = ERROR_MESSAGE() + '\n Save Failed';
-		Select @ErrorMsg;
-	End Catch
-End
-
-ALTER PROCEDURE [dbo].[Rpt_Inventory](@PgIdx Varchar(5), @CustId Varchar(15))
-As
-BEGIN
-	Declare @Where as Varchar(100) = '';
-	Declare @Qry as nVarchar(max) = '';
-
-	IF(@PgIdx = 403 or (@PgIdx = 404 and @CustId != '0'))
-		Set @Where = ' and PS.CustId = '+ @CustId;
-	ELSE IF(@PgIdx = 404)
-		Set @Where = ' and PS.CustId != 0';
-
-  Set @Qry = 'Select C.CustDesc, P.ProductDesc, Count(PS.SlNo) as BarcodeQty, PS.ProductId, STRING_AGG(Concat(PS.SlNo,'' | '',PS.Barcode), '','') as Barcode
-	From Products P, ProductStock PS LEFt JOIN Customers C On(PS.CustId = C.CustId) 
-  Where PS.ProductId = P.ProductId and PS.Status = 1 '+ @Where +' Group By C.CustDesc, PS.ProductId, P.ProductDesc';
-
-  Print(@Qry);
-  EXEC (@Qry);
-END
-
-CREATE PROCEDURE [dbo].[Rpt_StockInward](@FromDate Varchar(10), @ToDate Varchar(10),@ProductId Varchar(15))
-As
-Begin
-Declare @Qry as nVarchar(max) = '';
-
-Set @Qry = 'Select Convert(varchar(10),SI.SDate,121) as SDate, P.ProductDesc, SI.Quantity, SI.FromSlNo, SI.ToSlNo, E.EmpName, SI.Remarks 
-			from StockInward SI, Products P, Employees E 
-			Where SI.ProductId = P.ProductId and SI.EmpId = E.EmpId and SI.Status = 1 and 
-			Convert(varchar(10),SI.SDate,121) >= '''+ @FromDate +''' and Convert(varchar(10),SI.SDate,121) <= '''+ @ToDate +''' '
-
-IF(@ProductId != '0')
-	Set @Qry = @Qry + ' and SI.ProductId = ' +@ProductId
-
-Set @Qry = @Qry + ' Order by SI.SDate,P.ProductDesc, SI.FromSlNo';
-
-Print(@Qry);
-EXEC (@Qry);
-End
-
-CREATE PROCEDURE [dbo].[Rpt_Check_InOut](@FromDate Varchar(10), @ToDate Varchar(10),@ProductId Varchar(15),@TranType int)
-As
-Begin
-Declare @Qry as nVarchar(max) = '';
-
-Set @Qry = 'Select TH.TranDate,T.TransporterDesc,TH.VehicleNo, C.CustDesc, P.ProductDesc, COUNT(Barcode) as Quantity, E.EmpName, 
-			STRING_AGG(CONCAT(TL.SlNo,'' | '', TL.Barcode),'','') as SlNos 
-			From TranHeader TH, TranLines TL, Customers C, Products P,Transporters T, Employees E 
-			Where TH.TranId = TL.TranId and TL.CustId = C.CustId and TL.ProductId = P.ProductId and TH.EmpId = E.EmpId and 
-			TH.Status = 1 and TL.Status = 1 and Convert(varchar(10),TH.TranDate,121) >= '''+ @FromDate +''' 
-			and Convert(varchar(10),TH.TranDate,121) <= '''+ @ToDate +''' and TH.TranType = ' + @TranType;
-
-IF(@ProductId != '0')
-	Set @Qry = @Qry + ' and TL.ProductId = ' +@ProductId
-
-Set @Qry = @Qry + ' Group By TH.TranDate,C.CustDesc,P.ProductDesc,T.TransporterDesc,TH.VehicleNo,E.EmpName 
-					Order By TH.TranDate,C.CustDesc,P.ProductDesc';
-
-Print(@Qry);
-EXEC (@Qry);
+	Print(@Qry);
+	EXEC (@Qry);
 End

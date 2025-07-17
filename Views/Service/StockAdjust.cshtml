@@ -65,7 +65,8 @@
                     </select>
                 </div>
                 <div class="col-sm-2 searchformfld">
-                    <div class="acc-header">
+                    <div class="acc-header inventory_savebtn">
+                        <button class="btn btn-danger mb-4" type="reset" onclick="fnClear()">Reset</button>
                         <button type="button" class="btn btn-primary mb-4" data-bs-toggle="collapse" data-bs-target="#stockadjust" aria-expanded="true" aria-controls="stockadjust">Barcode<i class="las la-qrcode" style="font-size: 20px;margin-left: 5px;"></i></button>
                     </div>
                 </div>
@@ -102,6 +103,11 @@
         fnClear();
     });
 
+    $('#ddlCustomer').on('change', function () {
+        $('#ddlCustomer').css('color', 'black');
+        $('#ddlCustomer').prop('disabled', true);
+    });
+
     function updateFinalQuantity() {
         const stockInput = document.getElementById('txtStock');
         const adjQtyInput = document.getElementById('txtAdjQty');
@@ -122,6 +128,7 @@
 
     function fnClear() {
         $('#ddlCustomer').val("0");
+        $('#ddlCustomer').prop('disabled', false);
         $('#ddlProduct').val("0").trigger('change');
         $('#txtStock').val("");
         $('#txtAdjQty').val("");
@@ -301,4 +308,14 @@
         }
     }
 
+
+    function fnReset() {
+        try {
+
+        }
+        catch (e) {
+            alert("Error - 3 \n " + e.message);
+
+        }
+    }
 </script>
